@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节点工坊 · Mihomo / Stash</title>
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20fill%3D%22none%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232563eb%22/%3E%3Cpath%20d%3D%22M19%2019v26m0-13h13c8%200%2013-5%2013-13M32%2032c8%200%2013%205%2013%2013%22%20stroke%3D%22%23bfdbfe%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2219%22%20r%3D%225%22%20fill%3D%22white%22/%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2245%22%20r%3D%225%22%20fill%3D%22white%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2219%22%20r%3D%225%22%20fill%3D%22white%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2245%22%20r%3D%225%22%20fill%3D%22%2393c5fd%22/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="assets/tailwind.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); }
+        .editor-container { background: #1e1e1e; color: #d4d4d4; font-family: 'Fira Code', monospace; }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .glass-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* YAML Syntax Highlighting */
+        .yaml-key { color: #9cdcfe; }
+        .yaml-string { color: #ce9178; }
+        .yaml-number { color: #b5cea8; }
+        .yaml-boolean { color: #569cd6; }
+        .yaml-comment { color: #6a9955; }
+        .yaml-tag { color: #4ec9b0; }
+        
+        /* Toast Animation */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .toast {
+            animation: slideIn 0.3s ease-out;
+        }
+        .toast.hiding {
+            animation: slideOut 0.3s ease-out;
+        }
+        
+        /* Loading Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Button Hover Effect */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Input Focus Animation */
+        .input-area {
+            transition: all 0.3s ease;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        }
+        .input-area:focus {
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            transition: all 0.3s ease;
+        }
+        
+        /* Drag Overlay */
+        .drag-overlay {
+            backdrop-filter: blur(4px);
+        }
+
+        /* Node workshop visual system; conversion logic and templates are unchanged. */
+        :root { color-scheme: light; --accent:#2563eb; }
+        body { margin:0; height:auto!important; min-height:100vh; overflow:auto!important; padding:32px!important; background:radial-gradient(ellipse at 90% 0%,#dbeafe 0,transparent 43%),#f3f7fc; font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif; color:#1e3353; }
+        body > .max-w-7xl { height:auto!important; overflow:visible!important; max-width:1280px; }
+        header { margin-bottom:38px!important; }
+        .brand-icon { width:50px; height:50px; flex-shrink:0; filter:drop-shadow(0 6px 9px #2563eb22); }
+        .brand-icon svg { width:100%; height:100%; }
+        header h1 { font-size:24px!important; letter-spacing:-1px!important; }
+        header .text-blue-600 { color:var(--accent)!important; }
+        header .text-[10px] { background:#e8f0fc!important; color:#45658c!important; border-color:#d3e1f5!important; }
+        .intro-strip { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:28px; }
+        .eyebrow { color:#6783a5; font-size:10px; font-weight:700; letter-spacing:2.4px; }
+        .intro-strip h2 { font-size:34px; font-weight:650; letter-spacing:-1px; margin:10px 0 9px; line-height:1.3; }
+        .intro-strip p { color:#718198; font-size:13px; }
+        .protocols { display:flex; flex-wrap:wrap; gap:7px; padding-bottom:3px; }
+        .protocols span { border:1px solid #d9e3f0; padding:6px 10px; border-radius:6px; font-size:10px; color:#607796; background:#ffffff66; }
+        .workspace { overflow:visible!important; align-items:stretch; gap:22px!important; }
+        .glass-card { border:1px solid #dce5f1!important; border-radius:20px; box-shadow:0 8px 30px #1f446608; backdrop-filter:none; height:620px!important; }
+        .glass-card:hover { box-shadow:0 8px 30px #1f446608; }
+        .input-card { padding:26px!important; background:#ffffffed; }
+        .input-area { background:#f5f8fd; border:1px solid #dfe7f3; border-radius:12px; padding:18px!important; font-size:12px!important; line-height:1.9!important; color:#29456b; }
+        .input-area::placeholder { color:#8d9db4; }
+        .input-area:focus { border-color:#75a4ee; box-shadow:0 0 0 3px #2563eb12; outline:none; }
+        #nodeCount { background:#edf4ff; color:#3568ab; border-color:#dce8fa; }
+        .input-card .text-blue-500 { color:#2563eb!important; }
+        .btn-primary { background:#2563eb; border-radius:11px; box-shadow:0 5px 12px #2563eb20; }
+        .btn-primary:hover { background:#1d4ed8; box-shadow:0 7px 15px #2563eb25; }
+        #kernelBtnMihomo,#kernelBtnStash { min-height:38px; }
+        #kernelBtnMihomo.text-blue-600,#kernelBtnStash.text-blue-600 { color:#2563eb!important; }
+        .output-card { background:#142238; border-color:#253c5c!important; box-shadow:0 14px 35px #12305512!important; }
+        .output-card > div:first-child { background:#1c304c; padding:18px 22px; border-bottom:1px solid #ffffff09; flex-wrap:wrap; gap:14px; }
+        .output-card button { background:#294264; border-color:#405c80; border-radius:8px; }
+        .output-card button:hover { background:#355780; }
+        .editor-container { background:#142238; color:#ccd9ed; font-family:"Cascadia Code",Consolas,monospace; padding:26px!important; }
+        #outputArea { line-height:1.9; font-size:12px; overflow-wrap:anywhere; opacity:1; }
+        .output-card > div:last-child { background:#172a44; border-color:#294361; padding:13px 20px; flex-wrap:wrap; gap:8px; }
+        .output-card > div:last-child > div > span:first-child { display:none; }
+        #kernelLabel { color:#93bfff!important; }
+        .yaml-key { color:#91c6ff; }.yaml-string { color:#e3c89d; }.yaml-comment { color:#7c95b7; }.yaml-boolean { color:#a9bdf3; }
+        button:focus-visible { outline:3px solid #70a8f5; outline-offset:3px; }
+        @media(max-width:1023px) { body { padding:24px!important; }.intro-strip { align-items:flex-start; flex-direction:column; gap:16px; }.input-card { height:510px!important; }.output-card { height:550px!important; } }
+        @media(max-width:600px) { body { padding:18px 14px!important; } header { margin-bottom:26px!important; }.intro-strip h2 { font-size:27px; }.input-card { padding:20px!important; }.output-card > div:first-child { padding:16px; }.output-card button { padding:8px 10px; }.protocols { gap:5px; } }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+    </style>
+</head>
+<body class="h-screen overflow-hidden p-4 md:p-8">
+    <p class="max-w-7xl mx-auto mb-4 text-xs text-slate-500">节点链接仅在当前浏览器解析，不上传、不保存；页面不内置节点。请提供规则指定节点及至少一个 HK / MO / TW 节点。</p>
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <div class="max-w-7xl mx-auto h-screen flex flex-col overflow-hidden">
+        <header class="mb-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="brand-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="18" fill="#2563eb"/><path d="M19 19v26m0-13h13c8 0 13-5 13-13M32 32c8 0 13 5 13 13" stroke="#bfdbfe" stroke-width="4" stroke-linecap="round"/><circle cx="19" cy="19" r="5" fill="white"/><circle cx="19" cy="45" r="5" fill="white"/><circle cx="45" cy="19" r="5" fill="white"/><circle cx="45" cy="45" r="5" fill="#93c5fd"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">节点<span class="text-blue-600">工坊</span></h1>
+                    <p class="text-slate-500 text-sm mt-0.5">连接，从一份好配置开始。</p>
+                </div>
+            </div>
+            <div class="hidden md:block text-right">
+                <span class="text-[10px] bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-tighter border border-blue-200">
+                    <i class="fas fa-shield-alt mr-1"></i>在浏览器内转换
+                </span>
+            </div>
+        </header>
+
+        <section class="intro-strip"><div><span class="eyebrow">NODE CONFIGURATOR</span><h2>把节点，整理成连接。</h2><p>粘贴链接，选择客户端，生成你的专属分流配置。</p></div><div class="protocols"><span>VMess</span><span>VLESS</span><span>Trojan</span><span>Shadowsocks</span></div></section>
+        <div class="workspace grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow overflow-hidden">
+            <div class="lg:col-span-5 space-y-6">
+                <div class="input-card glass-card p-6 border-t-4 border-t-blue-500 h-[580px] md:h-[680px] flex flex-col">
+                    <div class="flex items-center mb-4 justify-between">
+                        <label for="inputArea" class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                            <i class="fas fa-paste text-blue-500"></i>
+                            01 · 导入节点
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <button onclick="clearInput()" class="text-xs text-slate-500 hover:text-red-500 px-2 py-1 rounded-lg transition-all hover:bg-red-50" title="清空">
+                                <i class="fas fa-trash-alt mr-1"></i>清空
+                            </button>
+                            <span id="nodeCount" class="text-xs bg-blue-50 px-2.5 py-1 rounded-lg text-blue-600 font-bold border border-blue-100">0 个节点</span>
+                        </div>
+                    </div>
+                    <div class="relative flex-grow flex flex-col min-h-0">
+                        <textarea id="inputArea" 
+                            class="input-area w-full h-full p-4 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono leading-relaxed resize-none" 
+                            placeholder="在此粘贴多行 vmess://, vless:// 或 ss:// 链接...&#10;支持拖拽 .txt 文件导入&#10;支持格式：vmess, vless, trojan, ss&#10;快捷键：Ctrl + Enter 生成"></textarea>
+                        <div id="dragOverlay" class="drag-overlay hidden absolute inset-0 bg-blue-500/20 border-2 border-blue-500 border-dashed rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white px-6 py-3 rounded-xl shadow-xl">
+                                <span class="text-blue-600 font-bold flex items-center">
+                                    <i class="fas fa-cloud-upload-alt mr-2 text-xl"></i>释放导入
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <div class="flex items-center gap-1 mb-3 bg-slate-100 rounded-xl p-1">
+                            <button id="kernelBtnMihomo" onclick="setKernel('mihomo')" class="flex-1 text-xs font-bold py-2 rounded-lg transition-all bg-white text-blue-600 shadow">Mihomo</button>
+                            <button id="kernelBtnStash" onclick="setKernel('stash')" class="flex-1 text-xs font-bold py-2 rounded-lg transition-all text-slate-500">Stash</button>
+                        </div>
+                        <button id="generateBtn" onclick="process()" class="btn-primary w-full text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center space-x-3 group">
+                            <i id="btnIcon" class="fas fa-magic group-hover:rotate-12 transition-transform"></i>
+                            <span id="btnText">生成完整配置</span>
+                        </button>
+                        <p class="text-[11px] text-slate-400 mt-3 text-center flex items-center justify-center gap-1">
+                            <i class="fas fa-info-circle"></i>
+                            支持拖拽导入 · Ctrl + Enter 快速生成
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <div class="output-card glass-card overflow-hidden shadow-2xl flex flex-col h-[580px] md:h-[680px] border-none">
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="flex space-x-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <span class="ml-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center">
+                                <i class="fas fa-file-code mr-2"></i> YAML
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="downloadConfig()" class="text-xs bg-slate-700/80 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-all flex items-center border border-slate-600 active:scale-95">
+                                <i class="fas fa-download mr-2"></i> 下载配置
+                            </button>
+                            <button onclick="copyContent()" class="text-xs bg-slate-700/80 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-all flex items-center border border-slate-600 active:scale-95">
+                                <i class="far fa-copy mr-2"></i> 复制
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-grow overflow-auto editor-container p-6">
+                        <pre id="outputArea" class="text-xs leading-relaxed whitespace-pre-wrap opacity-40"># 你的下一次连接，从这里开始。
+
+# 1. 在左侧粘贴节点链接
+# 2. 选择 Mihomo 或 Stash
+# 3. 生成配置，然后下载导入客户端</pre>
+                    </div>
+                    <div class="bg-slate-900 px-6 py-3 border-t border-slate-800 flex justify-between items-center">
+                        <span id="statusBar" class="text-[10px] text-slate-500 font-mono font-bold uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            等待生成
+                        </span>
+                        <div class="flex space-x-4">
+                             <span class="text-[10px] text-slate-600 font-mono uppercase">Templates: mihomo.yaml / stash.yaml</span>
+                             <span id="kernelLabel" class="text-[10px] text-blue-500 font-mono font-bold uppercase">Mihomo / Clash Meta</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 内置用户提供的规则模板
+        const CLASH_TEMPLATE = "# mihomo 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。\n# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\nunified-delay: true\ntcp-concurrent: true\nprofile:\n  store-selected: true\n  store-fake-ip: true\ngeo-auto-update: true\ngeo-update-interval: 24\ngeox-url:\n  geoip: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat\n  geosite: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat\n  mmdb: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb\ndns:\n  enable: true\n  respect-rules: true\n  listen: 0.0.0.0:53\n  ipv6: true\n  enhanced-mode: fake-ip\n  fake-ip-range: 198.18.0.1/16\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  direct-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  direct-nameserver-follow-policy: false\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\n    - +.bilibili.com\n    - +.bilibili.cn\n    - +.hdslb.com\n    - +.bilivideo.com\n    - +.bilivideo.cn\n    - +.acgvideo.com\n    - +.biliapi.net\n    - +.biliapi.com\n    - +.biligame.com\ntun:\n  enable: true\n  stack: mixed\n  auto-route: true\n  auto-detect-interface: true\n  endpoint-independent-nat: true\n  dns-hijack:\n    - any:53\n    - tcp://any:53\nsniffer:\n  enable: true\n  sniff:\n    HTTP:\n      ports:\n        - 80\n    TLS:\n      ports:\n        - 443\n    QUIC:\n      ports:\n        - 443\nproxies:\n{{proxies}}\nproxy-groups:\n  - name: 🚀 节点选择\n    type: select\n    proxies:\n      - ♻️ 自动选择\n      - DIRECT\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n{{nodeList}}\n  - name: ♻️ 自动选择\n    type: url-test\n    proxies:\n{{nodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇯🇵 日本-最优\n    type: url-test\n    proxies:\n{{jpNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇭🇰 港澳台-最优\n    type: url-test\n    proxies:\n{{hkNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇺🇸 美国-最优\n    type: url-test\n    proxies:\n{{usNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🤖 AI\n    type: select\n    proxies:\n      - LA-VMRack-三网\n      - LA-DMIT\n      - LA-Zgo\n  - name: 🌍 国外媒体\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: 📲 电报信息\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: Ⓜ️ 微软服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🍎 苹果服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎵 TikTok\n    type: select\n    proxies:\n      - 🇺🇸 美国-最优\n      - 🇯🇵 日本-最优\n      - 🚀 节点选择\n{{ttNodeList}}\n  - name: 🎮 Steam下载\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎯 全球直连\n    type: select\n    proxies:\n      - DIRECT\n      - 🚀 节点选择\n      - ♻️ 自动选择\n  - name: 🛑 全球拦截\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🍃 应用净化\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🐟 漏网之鱼\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list\n    path: ./rules/BanAD.list\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list\n    path: ./rules/BanProgramAD.list\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    path: ./ruleset/private.yaml\n    interval: 86400\n  GoogleCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list\n    path: ./rules/GoogleCN.list\n    interval: 86400\n  SteamCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list\n    path: ./rules/SteamCN.list\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list\n    path: ./rules/Microsoft.list\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    path: ./ruleset/icloud.yaml\n    interval: 86400\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    path: ./ruleset/apple.yaml\n    interval: 86400\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list\n    path: ./rules/ProxyMedia.list\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    path: ./ruleset/telegramcidr.yaml\n    interval: 86400\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    path: ./ruleset/google.yaml\n    interval: 86400\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    path: ./ruleset/proxy.yaml\n    interval: 86400\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    path: ./ruleset/gfw.yaml\n    interval: 86400\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    path: ./ruleset/tld-not-cn.yaml\n    interval: 86400\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    path: ./ruleset/direct.yaml\n    interval: 86400\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    path: ./ruleset/lancidr.yaml\n    interval: 86400\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    path: ./ruleset/cncidr.yaml\n    interval: 86400\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    path: ./ruleset/applications.yaml\n    interval: 86400\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    path: ./rules/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    path: ./ruleset/ai.yaml\n    interval: 86400\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-RFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - RULE-SET,GoogleCN,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\n";
+
+        // Stash（iOS/Mac/tvOS，Clash Premium 引擎）兼容模板
+        const STASH_TEMPLATE = "# stash 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。\n# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。\n# 适用 iOS/tvOS 3.6+、macOS 4.3+；iOS/tvOS 不支持进程规则。\n# 共享代理：Stash iOS/Mac 默认在 7890 提供 HTTP/SOCKS；请在客户端开启「允许局域网连接」。\n# 按用户要求显式输出 mixed-port: 7890 / allow-lan: true；客户端实际监听和共享开关仍需确认。\n# iOS 减负版：DNS 跟随规则、按 geosite 分流；移除 reject 及其独立广告组，广告覆盖减少。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\ndns:\n  follow-rule: true\n  ipv6: true\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\n    - +.bilibili.com\n    - +.bilibili.cn\n    - +.hdslb.com\n    - +.bilivideo.com\n    - +.bilivideo.cn\n    - +.acgvideo.com\n    - +.biliapi.net\n    - +.biliapi.com\n    - +.biligame.com\nproxies:\n{{proxies}}\nproxy-groups:\n  - name: 🚀 节点选择\n    type: select\n    proxies:\n      - ♻️ 自动选择\n      - DIRECT\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n{{nodeList}}\n  - name: ♻️ 自动选择\n    type: url-test\n    proxies:\n{{nodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇯🇵 日本-最优\n    type: url-test\n    proxies:\n{{jpNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇭🇰 港澳台-最优\n    type: url-test\n    proxies:\n{{hkNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇺🇸 美国-最优\n    type: url-test\n    proxies:\n{{usNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🤖 AI\n    type: select\n    proxies:\n      - LA-VMRack-三网\n      - LA-DMIT\n      - LA-Zgo\n  - name: 🌍 国外媒体\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: 📲 电报信息\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: Ⓜ️ 微软服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🍎 苹果服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎵 TikTok\n    type: select\n    proxies:\n      - 🇺🇸 美国-最优\n      - 🇯🇵 日本-最优\n      - 🚀 节点选择\n{{ttNodeList}}\n  - name: 🎮 Steam下载\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎯 全球直连\n    type: select\n    proxies:\n      - DIRECT\n      - 🚀 节点选择\n      - ♻️ 自动选择\n  - name: 🛑 全球拦截\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🍃 应用净化\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🐟 漏网之鱼\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    interval: 86400\n    format: yaml\n  GoogleCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list\n    interval: 86400\n  SteamCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    interval: 86400\n    format: yaml\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    interval: 86400\n    format: yaml\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    interval: 86400\n    format: yaml\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    interval: 86400\n    format: yaml\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    interval: 86400\n    format: yaml\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    interval: 86400\n    format: yaml\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    interval: 86400\n    format: yaml\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    interval: 86400\n    format: yaml\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    interval: 86400\n    format: yaml\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    interval: 86400\n    format: yaml\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    interval: 86400\n    format: yaml\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    interval: 86400\n    format: yaml\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-RFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - RULE-SET,GoogleCN,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\n";
+
+        // 生成唯一节点名
+        const nodeNames = new Set();
+        function getUniqueName(name) {
+            let unique = name || 'Unnamed';
+            let counter = 1;
+            while (nodeNames.has(unique)) {
+                unique = `${name}_${counter}`;
+                counter++;
+            }
+            nodeNames.add(unique);
+            return unique;
+        }
+
+        // 转义 YAML 特殊字符
+        function escapeYaml(str) {
+            if (!str) return '';
+            if (/[:#\{\}\[\],&\*\?\|'>=%!@`]/.test(str)) {
+                return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+            }
+            return str;
+        }
+
+        // Toast 通知
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 min-w-[200px]`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // YAML 语法高亮
+        function highlightYaml(yaml) {
+            // Escape user-provided text before inserting syntax markup into the DOM.
+            const safe = yaml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return safe
+                .replace(/([a-zA-Z0-9_-]+)(:\s)/g, '<span class="yaml-key">$1</span>$2')
+                .replace(/: (true|false)/g, ': <span class="yaml-boolean">$1</span>')
+                .replace(/: (\d+)/g, ': <span class="yaml-number">$1</span>')
+                .replace(/: "([^"]*)"/g, ': <span class="yaml-string">"$1"</span>')
+                .replace(/: '([^']*)'/g, ': <span class="yaml-string">\'$1\'</span>')
+                .replace(/: (vmess|vless|trojan|ss|url-test|select)/g, ': <span class="yaml-tag">$1</span>')
+                .replace(/(https?:\/\/[^\s]+)/g, '<span class="yaml-string">$1</span>');
+        }
+
+        function parseNode(url, lineNum) {
+            url = url.trim();
+            if(!url || url.startsWith('#')) return null;
+            try {
+                if (url.startsWith('vmess://')) {
+                    let base64Str = url.replace('vmess://', '');
+                    base64Str = base64Str.replace(/-/g, '+').replace(/_/g, '/');
+                    while (base64Str.length % 4) base64Str += '=';
+                    const jsonStr = atob(base64Str);
+                    const c = JSON.parse(jsonStr);
+                    return { 
+                        name: getUniqueName(c.ps || `vmess_${lineNum}`), 
+                        type: 'vmess', 
+                        server: c.add, 
+                        port: parseInt(c.port), 
+                        uuid: c.id, 
+                        alterId: parseInt(c.aid) || 0,
+                        cipher: 'auto',
+                        tls: c.tls === 'tls',
+                        servername: c.sni || c.host || c.add,
+                        network: c.net || 'tcp',
+                        wsOpts: c.net === 'ws' ? { path: c.path || '/', headers: { Host: c.host || c.add } } : undefined
+                    };
+                }
+                if (url.startsWith('vless://')) {
+                    // IPv6 裸地址（不带方括号）会导致 new URL() 解析失败，需预处理补全方括号
+                    // 格式: vless://uuid@1:2:3:4:port?... → vless://uuid@[1:2:3:4]:port?...
+                    const fixedVless = url.replace(
+                        /^(vless:\/\/[^@]+@)([\da-fA-F:]+)(:[\d]+)/,
+                        (_, prefix, host, portPart) => {
+                            // 只有不带方括号的纯 IPv6 地址才补全
+                            return host.includes(':') && !host.startsWith('[')
+                                ? `${prefix}[${host}]${portPart}`
+                                : `${prefix}${host}${portPart}`;
+                        }
+                    );
+                    const u = new URL(fixedVless);
+                    const params = Object.fromEntries(u.searchParams);
+                    // u.hostname 对 IPv6 会返回带方括号的形式如 [::1]，去掉方括号还原
+                    const serverHost = u.hostname.replace(/^\[|\]$/g, '');
+                    return {
+                        name: getUniqueName(decodeURIComponent(u.hash.slice(1)) || `vless_${lineNum}`),
+                        type: 'vless',
+                        server: serverHost,
+                        port: parseInt(u.port) || 443,
+                        uuid: u.username,
+                        servername: params.sni || params.host || serverHost,
+                        tls: params.security === 'tls' || params.security === 'xtls' || params.security === 'reality',
+                        flow: params.flow || '',
+                        fingerprint: params.fp || 'chrome',
+                        network: params.type || 'tcp',
+                        wsOpts: params.type === 'ws' ? { path: params.path || '/', headers: { Host: params.host || serverHost } } : undefined,
+                        realityOpts: params.security === 'reality' ? {
+                            publicKey: params.pbk,
+                            shortId: params.sid || ''
+                        } : undefined
+                    };
+                }
+                if (url.startsWith('trojan://')) {
+                    const fixedTrojan = url.replace(
+                        /^(trojan:\/\/[^@]+@)([\da-fA-F:]+)(:[\d]+)/,
+                        (_, prefix, host, portPart) => {
+                            return host.includes(':') && !host.startsWith('[')
+                                ? `${prefix}[${host}]${portPart}`
+                                : `${prefix}${host}${portPart}`;
+                        }
+                    );
+                    const u = new URL(fixedTrojan);
+                    const params = Object.fromEntries(u.searchParams);
+                    const serverHost = u.hostname.replace(/^\[|\]$/g, '');
+                    return { 
+                        name: getUniqueName(decodeURIComponent(u.hash.slice(1)) || `trojan_${lineNum}`), 
+                        type: 'trojan', 
+                        server: serverHost, 
+                        port: parseInt(u.port) || 443, 
+                        password: u.username, 
+                        tls: true,
+                        sni: params.sni || serverHost,
+                        network: params.type || 'tcp',
+                        wsOpts: params.type === 'ws' ? { path: params.path || '/', headers: { Host: params.host || serverHost } } : undefined
+                    };
+                }
+                if (url.startsWith('ss://')) {
+                    let name = 'SS_Node', server, port, method, password;
+                    
+                    if (url.includes('@')) {
+                        const parts = url.replace('ss://', '').split('#');
+                        name = parts[1] ? decodeURIComponent(parts[1]) : name;
+                        const [conf, srvPart] = parts[0].split('@');
+                        const base64Conf = conf.replace(/-/g, '+').replace(/_/g, '/');
+                        const decoded = atob(base64Conf);
+                        const colonIndex = decoded.indexOf(':');
+                        if (colonIndex === -1) throw new Error('Invalid SS format');
+                        method = decoded.slice(0, colonIndex);
+                        password = decoded.slice(colonIndex + 1);
+                        [server, port] = srvPart.split(':');
+                    } else {
+                        const parts = url.replace('ss://', '').split('#');
+                        name = parts[1] ? decodeURIComponent(parts[1]) : name;
+                        let base64Str = parts[0].replace(/-/g, '+').replace(/_/g, '/');
+                        while (base64Str.length % 4) base64Str += '=';
+                        const decoded = atob(base64Str);
+                        const atIndex = decoded.lastIndexOf('@');
+                        if (atIndex === -1) throw new Error('Invalid SS format');
+                        const leftPart = decoded.slice(0, atIndex);
+                        const rightPart = decoded.slice(atIndex + 1);
+                        const colonIndex = leftPart.indexOf(':');
+                        if (colonIndex === -1) throw new Error('Invalid SS format');
+                        method = leftPart.slice(0, colonIndex);
+                        password = leftPart.slice(colonIndex + 1);
+                        [server, port] = rightPart.split(':');
+                    }
+                    
+                    return { 
+                        name: getUniqueName(name), 
+                        type: 'ss', 
+                        server, 
+                        port: parseInt(port), 
+                        cipher: method, 
+                        password 
+                    };
+                }
+            } catch (e) { 
+                console.warn(`第 ${lineNum} 行解析失败:`, e.message);
+                return { error: true, line: lineNum, message: e.message };
+            }
+            return null;
+        }
+
+        let targetKernel = 'mihomo';
+        function setKernel(k) {
+            targetKernel = k;
+            const on = 'flex-1 text-xs font-bold py-2 rounded-lg transition-all bg-white text-blue-600 shadow';
+            const off = 'flex-1 text-xs font-bold py-2 rounded-lg transition-all text-slate-500';
+            document.getElementById('kernelBtnMihomo').className = k === 'mihomo' ? on : off;
+            document.getElementById('kernelBtnStash').className = k === 'stash' ? on : off;
+            document.getElementById('kernelLabel').textContent = k === 'mihomo' ? 'Mihomo / Clash Meta' : 'Stash';
+        }
+
+        let isProcessing = false;
+
+        function process() {
+            if (isProcessing) return;
+            
+            const input = document.getElementById('inputArea').value.trim();
+            if (!input) {
+                showToast('请输入节点链接', 'warning');
+                return;
+            }
+
+            isProcessing = true;
+            const btn = document.getElementById('generateBtn');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
+            
+            btn.disabled = true;
+            btnIcon.className = 'fas fa-circle-notch spinner';
+            btnText.textContent = '生成中...';
+
+            // 模拟异步处理以显示 loading 效果
+            setTimeout(() => {
+                nodeNames.clear();
+                
+                const lines = input.split(/\r?\n/);
+                const results = [];
+                const errors = [];
+                
+                lines.forEach((line, idx) => {
+                    const result = parseNode(line, idx + 1);
+                    if (result) {
+                        if (result.error) {
+                            errors.push(result);
+                        } else {
+                            results.push(result);
+                        }
+                    }
+                });
+
+                if (results.length === 0) {
+                    const errorMsg = errors.length > 0 
+                        ? `解析失败！共 ${errors.length} 个错误`
+                        : "未检测到有效节点链接";
+                    showToast(errorMsg, 'error');
+                    if (errors.length > 0) {
+                        console.error('解析错误:', errors);
+                    }
+                    
+                    // 恢复按钮
+                    isProcessing = false;
+                    btn.disabled = false;
+                    btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
+                    btnText.textContent = '生成完整配置';
+                    return;
+                }
+
+                // 生成 YAML
+                // 固定出口不能静默替换；区域为空也不能冒充美国节点。
+                const requiredNodes = ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo', 'JP-RFCHost'];
+                const missingRequired = requiredNodes.filter(name => !results.some(n => n.name === name));
+                if (missingRequired.length) {
+                    document.getElementById('outputArea').textContent = '等待补齐规则指定节点';
+                    showToast(`请补齐规则指定节点：${missingRequired.join('、')}`, 'error');
+                    isProcessing = false;
+                    btn.disabled = false;
+                    btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
+                    btnText.textContent = '生成完整配置';
+                    return;
+                }
+                const proxiesYaml = results.map(n => {
+                    const safeName = escapeYaml(n.name);
+                    let s = `  - name: ${safeName}\n    type: ${n.type}\n    server: ${n.server}\n    port: ${n.port}\n    udp: true`;
+                    
+                    if (n.type === 'ss') {
+                        s += `\n    cipher: ${n.cipher}\n    password: ${escapeYaml(n.password)}`;
+                    } else if (n.type === 'vmess') {
+                        s += `\n    uuid: ${n.uuid}\n    alterId: ${n.alterId}\n    cipher: ${n.cipher || 'auto'}\n    tls: ${n.tls}`;
+                        if (n.tls) {
+                            s += `\n    servername: ${escapeYaml(n.servername || n.server)}`;
+                        }
+                        if (n.network && n.network !== 'tcp') {
+                            s += `\n    network: ${n.network}`;
+                            if (n.wsOpts) {
+                                s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
+                            }
+                        }
+                    } else if (n.type === 'vless') {
+                        s += `\n    uuid: ${n.uuid}`;
+                        s += `\n    servername: ${escapeYaml(n.servername)}`;
+                        s += `\n    tls: ${n.tls}`;
+                        if (n.flow) {
+                            s += `\n    flow: ${n.flow}`;
+                        }
+                        s += `\n    client-fingerprint: ${n.fingerprint || 'chrome'}`;
+                        if (n.network && n.network !== 'tcp') {
+                            s += `\n    network: ${n.network}`;
+                            if (n.wsOpts) {
+                                s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
+                            }
+                        }
+                        if (n.realityOpts && n.realityOpts.publicKey) {
+                            s += `\n    reality-opts:\n      public-key: ${escapeYaml(n.realityOpts.publicKey)}`;
+                            if (n.realityOpts.shortId) {
+                                s += `\n      short-id: ${escapeYaml(n.realityOpts.shortId)}`;
+                            }
+                        }
+                    } else if (n.type === 'trojan') {
+                        s += `\n    password: ${escapeYaml(n.password)}`;
+                        s += `\n    tls: ${n.tls}`;
+                        s += `\n    sni: ${escapeYaml(n.sni)}`;
+                        if (n.network && n.network !== 'tcp') {
+                            s += `\n    network: ${n.network}`;
+                            if (n.wsOpts) {
+                                s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
+                            }
+                        }
+                    }
+                    return s;
+                }).join('\n');
+
+                const nodeListYaml = results.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
+
+                // 按地区分类节点（根据节点名称前缀识别）
+                const jpNodes = results.filter(n => /^JP|^JPMAX/i.test(n.name));
+                const hkNodes = results.filter(n => /^HK|^MO|^TW/i.test(n.name));
+                const usNodes = results.filter(n => /^LA|^SJC|^DLS/i.test(n.name));
+
+                // 地区分组仅包含用户输入的节点。
+                if (!hkNodes.length) {
+                    document.getElementById('outputArea').textContent = '等待补齐地区节点';
+                    showToast('请提供至少一个 HK / MO / TW 前缀的节点以填充港台地区组', 'error');
+                    isProcessing = false;
+                    btn.disabled = false;
+                    btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
+                    btnText.textContent = '生成完整配置';
+                    return;
+                }
+                const jpNodeListYaml = jpNodes.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
+                const hkNodeListYaml = hkNodes.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
+                const usNodeListYaml = usNodes
+                    .map(n => `      - ${escapeYaml(n.name)}`).join('\n');
+                // TikTok 组：日本+美国节点罗列（TikTok 未在港澳运营，不含 HK/MO）
+                const ttNodeListYaml = [...jpNodes, ...usNodes]
+                    .map(n => `      - ${escapeYaml(n.name)}`).join('\n');
+
+                const final = (targetKernel === 'stash' ? STASH_TEMPLATE : CLASH_TEMPLATE)
+                    .replace('{{proxies}}', proxiesYaml)
+                    .replace(/{{nodeList}}/g, nodeListYaml)
+                    .replace('{{jpNodeList}}', jpNodeListYaml)
+                    .replace('{{hkNodeList}}', hkNodeListYaml)
+                    .replace('{{usNodeList}}', usNodeListYaml)
+                    .replace('{{ttNodeList}}', ttNodeListYaml);
+
+                const outputEl = document.getElementById('outputArea');
+                outputEl.innerHTML = highlightYaml(final);
+                outputEl.style.opacity = "1";
+                
+                const statusText = errors.length > 0 
+                    ? `LOADED: ${results.length} OK | ${errors.length} FAILED`
+                    : `UPDATED: ${results.length} NODES LOADED`;
+                
+                document.getElementById('nodeCount').innerText = `${results.length} Nodes`;
+                document.getElementById('statusBar').innerHTML = `
+                    <span class="w-2 h-2 rounded-full ${errors.length > 0 ? 'bg-yellow-500' : 'bg-green-500'} animate-pulse"></span>
+                    <span class="${errors.length > 0 ? 'text-yellow-500' : 'text-slate-500'}">${statusText}</span>
+                `;
+
+                if (errors.length > 0) {
+                    showToast(`生成成功，但有 ${errors.length} 个节点解析失败`, 'warning');
+                } else {
+                    showToast(`成功生成 ${results.length} 个节点配置`, 'success');
+                }
+
+                // 规则中直接引用了这些节点名，缺失会导致 mihomo 启动失败
+                const requiredByRules = ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo', 'JP-RFCHost'];
+                const missingNodes = requiredByRules.filter(n => !results.some(r => r.name === n));
+                if (missingNodes.length > 0) {
+                    showToast(`规则引用的节点缺失: ${missingNodes.join('、')}`, 'warning');
+                }
+
+                // 恢复按钮
+                isProcessing = false;
+                btn.disabled = false;
+                btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
+                btnText.textContent = '生成完整配置';
+            }, 300);
+        }
+
+        function copyContent() {
+            const content = document.getElementById('outputArea').textContent;
+            if(!content || content.startsWith('等待')) {
+                showToast('请先生成配置', 'warning');
+                return;
+            }
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('配置已复制到剪贴板', 'success');
+            }).catch(() => {
+                showToast('复制失败', 'error');
+            });
+        }
+        
+        function downloadConfig() {
+            const content = document.getElementById('outputArea').textContent;
+            if(!content || content.startsWith('等待')) {
+                showToast('请先生成配置', 'warning');
+                return;
+            }
+            const blob = new Blob([content], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${targetKernel}_config_${new Date().toISOString().slice(0,10)}.yaml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('配置已下载', 'success');
+        }
+        
+        function clearInput() {
+            const inputArea = document.getElementById('inputArea');
+            if(inputArea.value && confirm('确定要清空所有输入吗？')) {
+                inputArea.value = '';
+                document.getElementById('nodeCount').innerText = '0 个节点';
+                showToast('已清空', 'info');
+            }
+        }
+        
+        // 拖拽导入功能
+        const textarea = document.getElementById('inputArea');
+        const dragOverlay = document.getElementById('dragOverlay');
+        const dropZone = textarea.parentElement; // 包含 textarea 与 overlay 的容器
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function importFile(file) {
+            // 放宽文件类型检查，支持 .txt 和无后缀文件
+            if (file.name.endsWith('.txt') || file.type === 'text/plain' || file.type === '') {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    textarea.value = event.target.result;
+                    const lines = event.target.result.split(/\r?\n/).filter(l => {
+                        const t = l.trim();
+                        return t.startsWith('vmess://') || t.startsWith('vless://') || t.startsWith('trojan://') || t.startsWith('ss://');
+                    });
+                    document.getElementById('nodeCount').innerText = `${lines.length} Nodes`;
+                    showToast(`成功导入 ${lines.length} 个节点`, 'success');
+                };
+                reader.readAsText(file);
+            } else {
+                showToast('请上传 .txt 文件', 'warning');
+            }
+        }
+
+        // 事件绑定在容器上：overlay 覆盖 textarea 后，drop 会落在 overlay 上，
+        // 原先只绑在 textarea 会导致拖拽导入失效，这里改绑容器修复该 bug
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dragOverlay.classList.remove('hidden');
+        });
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            // 仅在真正离开容器时隐藏，避免子元素间移动时闪烁
+            if (!dropZone.contains(e.relatedTarget)) {
+                dragOverlay.classList.add('hidden');
+            }
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragOverlay.classList.add('hidden');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                importFile(files[0]);
+            }
+        });
+        
+        // 输入时自动统计
+        textarea.addEventListener('input', () => {
+            const lines = textarea.value.split(/\r?\n/).filter(l => {
+                const trimmed = l.trim();
+                return trimmed.startsWith('vmess://') || trimmed.startsWith('vless://') || trimmed.startsWith('trojan://') || trimmed.startsWith('ss://');
+            });
+            document.getElementById('nodeCount').innerText = `${lines.length} Nodes`;
+        });
+
+        // 快捷键支持
+        textarea.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                process();
+            }
+        });
+    </script>
+</body>
+</html>

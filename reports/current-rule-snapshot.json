@@ -1,0 +1,446 @@
+{
+  "checked_at": "2026-09-21T05:58:49.717438+00:00",
+  "scope": "Current Mihomo/Stash providers, exact text intersections only; no semantic equivalence inferred.",
+  "rules": [
+    "RULE-SET,applications,🎯 全球直连",
+    "RULE-SET,private,🎯 全球直连",
+    "RULE-SET,lancidr,DIRECT,no-resolve",
+    "GEOIP,LAN,DIRECT,no-resolve",
+    "AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT",
+    "RULE-SET,ai,🤖 AI",
+    "DOMAIN-SUFFIX,linux.do,🚀 节点选择",
+    "DOMAIN-SUFFIX,open.cd,🎯 全球直连",
+    "DOMAIN,clash.razord.top,🎯 全球直连",
+    "DOMAIN,yacd.haishan.me,🎯 全球直连",
+    "DOMAIN,rfc.uhdnow.com,JP-RFCHost",
+    "RULE-SET,TikTok,🎵 TikTok",
+    "RULE-SET,BanAD,🛑 全球拦截",
+    "RULE-SET,BanProgramAD,🍃 应用净化",
+    "RULE-SET,GoogleCN,🎯 全球直连",
+    "RULE-SET,SteamCN,🎮 Steam下载",
+    "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+    "RULE-SET,icloud,🍎 苹果服务",
+    "RULE-SET,apple,🍎 苹果服务",
+    "RULE-SET,ProxyMedia,🌍 国外媒体",
+    "RULE-SET,telegramcidr,📲 电报信息,no-resolve",
+    "RULE-SET,google,🚀 节点选择",
+    "RULE-SET,proxy,🚀 节点选择",
+    "RULE-SET,gfw,🚀 节点选择",
+    "RULE-SET,tld-not-cn,🚀 节点选择",
+    "RULE-SET,direct,DIRECT",
+    "RULE-SET,cncidr,DIRECT,no-resolve",
+    "GEOSITE,CN,DIRECT",
+    "GEOIP,CN,DIRECT",
+    "MATCH,🐟 漏网之鱼"
+  ],
+  "providers": {
+    "BanAD": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list",
+      "behavior": "classical",
+      "entries": 588,
+      "unique": 588,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "27a5f6d018d428409d8da5d9f390a46298d505ae4941bb8172f052055abe7262"
+    },
+    "BanProgramAD": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list",
+      "behavior": "classical",
+      "entries": 1016,
+      "unique": 1010,
+      "duplicates": 6,
+      "invalid_cidrs": [],
+      "sha256": "35cefd7a4c01d2efa9b4c7928e21caa348f78a3f60b46d7d850f1e3334a5a766"
+    },
+    "private": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
+      "behavior": "domain",
+      "entries": 130,
+      "unique": 130,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "3a04b128200ef8097d73b1496cbb23d24bc1e05d42fffb09f07c51699efb00b2"
+    },
+    "GoogleCN": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list",
+      "behavior": "classical",
+      "entries": 29,
+      "unique": 29,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "00ffcc16d0eb1898cba4f9c2cc2ce76a8f70bef7a03aea436dad79982b77c8ca"
+    },
+    "SteamCN": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list",
+      "behavior": "classical",
+      "entries": 16,
+      "unique": 16,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "bf135f78199fbadcb663a047d70eb59ec81bead3a04cfe050036e2921c2ea607"
+    },
+    "Microsoft": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list",
+      "behavior": "classical",
+      "entries": 79,
+      "unique": 79,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "b502566c1b86d5512111bd4a2bb5d808eda4e36aad3009a3ca05da354c09449e"
+    },
+    "icloud": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
+      "behavior": "domain",
+      "entries": 53,
+      "unique": 53,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "f1fb7e9d17400071bf77d853b2a3148ccb6a13d785cb97e73f1693142682b23f"
+    },
+    "apple": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
+      "behavior": "domain",
+      "entries": 165,
+      "unique": 165,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "a47d516880dcf65f51d3b40e6a71c33253e0774bdc4a7ec0a0d0a09a4dd522a2"
+    },
+    "ProxyMedia": {
+      "url": "https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list",
+      "behavior": "classical",
+      "entries": 372,
+      "unique": 357,
+      "duplicates": 15,
+      "invalid_cidrs": [],
+      "sha256": "fe886c6f537c0214446018f3f64291db8d500c58877d180d2a21a78c19c499e1"
+    },
+    "telegramcidr": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
+      "behavior": "ipcidr",
+      "entries": 12,
+      "unique": 12,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "328fca88c675763111c7f7585ec504e5c21ab9afb7a8ce6df33b7ac01b8a3ee0"
+    },
+    "google": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
+      "behavior": "domain",
+      "entries": 112,
+      "unique": 112,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "21a04f287800943b3fdfdef1f843173086171d9a0b5c9c33c3f73e1ec77d4c9e"
+    },
+    "proxy": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
+      "behavior": "domain",
+      "entries": 27098,
+      "unique": 27098,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "fb4042fde6b0784755f7e2904cee534dfadfbdffe39e73fb2c0f7f010ce41767"
+    },
+    "gfw": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
+      "behavior": "domain",
+      "entries": 4384,
+      "unique": 4384,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "5133ac5d6735e2040e9477e0c94640a9ac1bc2f40855c907c31648d59866d563"
+    },
+    "tld-not-cn": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
+      "behavior": "domain",
+      "entries": 829,
+      "unique": 829,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "67ada67716332c39e0afea361dd4b2ad66f55d0a92d3d1b90a7a1d4d47283f62"
+    },
+    "direct": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
+      "behavior": "domain",
+      "entries": 111169,
+      "unique": 111169,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "2943c230dc7d0789a568456fb7c6e60cb2cde85c278d1f524f487005c20f476c"
+    },
+    "lancidr": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
+      "behavior": "ipcidr",
+      "entries": 18,
+      "unique": 18,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "82920b241dc328f1dc99849cf733ed8675a00a4ee0bdf64c892b332dfb7e1e2e"
+    },
+    "cncidr": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
+      "behavior": "ipcidr",
+      "entries": 9741,
+      "unique": 9741,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "65669404ff308b1190bdf7b3f97302948d817582b73020750a15db00b529a7bb"
+    },
+    "applications": {
+      "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
+      "behavior": "classical",
+      "entries": 98,
+      "unique": 98,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "33bc8f07bacf74082fcb5f361eded1f6f9d3abcedcbe37ada2eb2ab4ae031732"
+    },
+    "TikTok": {
+      "url": "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list",
+      "behavior": "classical",
+      "entries": 32,
+      "unique": 32,
+      "duplicates": 0,
+      "invalid_cidrs": [],
+      "sha256": "7146b733ee239b6818d496aec1640cf1e962b39cda823388ce98d83761a6c885"
+    },
+    "ai": {
+      "url": "https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt",
+      "behavior": "domain",
+      "entries": 266,
+      "unique": 258,
+      "duplicates": 8,
+      "invalid_cidrs": [],
+      "sha256": "5cfe4229f7a65aefa3b3b228f1d0134f4c8b959fa255cafbb80c01958299bf57"
+    }
+  },
+  "overlaps": [
+    {
+      "a": "BanAD",
+      "b": "BanProgramAD",
+      "count": 2,
+      "examples": [
+        "DOMAIN-SUFFIX,flurry.com",
+        "DOMAIN-SUFFIX,pagechoice.net"
+      ]
+    },
+    {
+      "a": "private",
+      "b": "proxy",
+      "count": 1,
+      "examples": [
+        "+.ts.net"
+      ]
+    },
+    {
+      "a": "private",
+      "b": "direct",
+      "count": 4,
+      "examples": [
+        "+.hiwifi.com",
+        "+.leike.cc",
+        "+.peiluyou.com",
+        "+.tendawifi.com"
+      ]
+    },
+    {
+      "a": "icloud",
+      "b": "proxy",
+      "count": 44,
+      "examples": [
+        "+.applemx-icloud.com",
+        "+.icloud-content.com",
+        "+.icloud-isupport.com",
+        "+.icloud-sandbox.com",
+        "+.icloud.ch",
+        "+.icloud.com",
+        "+.icloud.de",
+        "+.icloud.ee",
+        "+.icloud.fi",
+        "+.icloud.fr",
+        "+.icloud.hu",
+        "+.icloud.ie"
+      ]
+    },
+    {
+      "a": "apple",
+      "b": "ai",
+      "count": 2,
+      "examples": [
+        "+.apps.mzstatic.com",
+        "+.guzzoni.apple.com"
+      ]
+    },
+    {
+      "a": "ProxyMedia",
+      "b": "TikTok",
+      "count": 9,
+      "examples": [
+        "DOMAIN-SUFFIX,byteoversea.com",
+        "DOMAIN-SUFFIX,ibytedtos.com",
+        "DOMAIN-SUFFIX,ipstatp.com",
+        "DOMAIN-SUFFIX,muscdn.com",
+        "DOMAIN-SUFFIX,musical.ly",
+        "DOMAIN-SUFFIX,tik-tokapi.com",
+        "DOMAIN-SUFFIX,tiktok.com",
+        "DOMAIN-SUFFIX,tiktokcdn.com",
+        "DOMAIN-SUFFIX,tiktokv.com"
+      ]
+    },
+    {
+      "a": "google",
+      "b": "proxy",
+      "count": 45,
+      "examples": [
+        "+.265.com",
+        "+.2mdn-cn.net",
+        "+.2mdn.net",
+        "+.admob-cn.com",
+        "+.app-analytics-services.com",
+        "+.app-measurement-cn.com",
+        "+.app-measurement.com",
+        "+.apps5.oingo.com",
+        "+.avail.googleflights.net",
+        "+.clickserve.cc-dt.com",
+        "+.clickserver.googleads.com",
+        "+.dartsearch-cn.net"
+      ]
+    },
+    {
+      "a": "google",
+      "b": "direct",
+      "count": 4,
+      "examples": [
+        "+.265.com",
+        "+.gvt1-cn.com",
+        "+.gvt2-cn.com",
+        "+.qiao-cn.com"
+      ]
+    },
+    {
+      "a": "proxy",
+      "b": "gfw",
+      "count": 4254,
+      "examples": [
+        "+.000webhost.com",
+        "+.0rz.tw",
+        "+.1-apple.com.tw",
+        "+.1000giri.net",
+        "+.10beasts.net",
+        "+.10musume.com",
+        "+.123av.com",
+        "+.123av.me",
+        "+.12bet.com",
+        "+.12vpn.com",
+        "+.12vpn.net",
+        "+.1337x.to"
+      ]
+    },
+    {
+      "a": "proxy",
+      "b": "tld-not-cn",
+      "count": 71,
+      "examples": [
+        "+.adult",
+        "+.amazon",
+        "+.android",
+        "+.apple",
+        "+.aws",
+        "+.azure",
+        "+.bbc",
+        "+.bing",
+        "+.bloomberg",
+        "+.bmw",
+        "+.bridgestone",
+        "+.canon"
+      ]
+    },
+    {
+      "a": "proxy",
+      "b": "direct",
+      "count": 119,
+      "examples": [
+        "+.265.com",
+        "+.91cy.app",
+        "+.91short.com",
+        "+.99thz.com",
+        "+.aa77kk.com",
+        "+.acs.org",
+        "+.age.tv",
+        "+.agedm.app",
+        "+.agefans.com",
+        "+.alibabacloud.com",
+        "+.alicloud.com",
+        "+.as.mr"
+      ]
+    },
+    {
+      "a": "proxy",
+      "b": "ai",
+      "count": 112,
+      "examples": [
+        "+.agentclientprotocol.com",
+        "+.ai.studio",
+        "+.anthropic.com",
+        "+.anythingllm.com",
+        "+.arena.ai",
+        "+.auth0.com",
+        "+.cerebras.ai",
+        "+.character.ai",
+        "+.chat.com",
+        "+.chatgpt.com",
+        "+.chatgpt.site",
+        "+.chutes.ai"
+      ]
+    },
+    {
+      "a": "gfw",
+      "b": "direct",
+      "count": 40,
+      "examples": [
+        "+.as.mr",
+        "+.bilinovel.com",
+        "+.chinamule.com",
+        "+.furrybar.com",
+        "+.futu5.com",
+        "+.futuau.com",
+        "+.futuesop.com",
+        "+.futufin.com",
+        "+.futuhn.com",
+        "+.futuniuniu.com",
+        "+.futunn.com",
+        "+.futustatic.com"
+      ]
+    },
+    {
+      "a": "gfw",
+      "b": "ai",
+      "count": 39,
+      "examples": [
+        "+.ai.studio",
+        "+.anthropic.com",
+        "+.arena.ai",
+        "+.cerebras.ai",
+        "+.character.ai",
+        "+.chat.com",
+        "+.chatgpt.com",
+        "+.chatgpt.site",
+        "+.cici.com",
+        "+.ciciai.com",
+        "+.civitai.com",
+        "+.claude.ai"
+      ]
+    },
+    {
+      "a": "direct",
+      "b": "ai",
+      "count": 3,
+      "examples": [
+        "+.minimax.io",
+        "+.qoder.com",
+        "+.r.bing.com"
+      ]
+    }
+  ]
+}

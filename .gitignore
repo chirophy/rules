@@ -1,0 +1,10 @@
+.tools/
+.cache/
+__pycache__/
+.private/
+.publish/
+rules-merged.yaml
+node_modules/
+*.log
+.env
+.env.*

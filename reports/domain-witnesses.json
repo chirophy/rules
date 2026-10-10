@@ -1,0 +1,1586 @@
+{
+  "snapshot_time": "2026-09-21T05:58:49.717438+00:00",
+  "scope": "Bounded domain-only witnesses using cached public provider snapshots.\n\nAssumes TCP, no process match, no already-known private/Telegram destination IP.\nDoes not simulate GEOSITE/GEOIP, DNS, wildcard dialects, or a complete client.\n",
+  "ai_tiktok_domain_witnesses": [
+    "+.byteoversea.com",
+    "+.marscode.com",
+    "+.trae.ai"
+  ],
+  "witnesses": [
+    {
+      "domain": "chatgpt.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.chatgpt.com",
+          "+.chatgpt.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.chatgpt.com",
+            "+.chatgpt.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,chatgpt.com",
+            "DOMAIN-SUFFIX,chatgpt.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.chatgpt.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.chatgpt.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "api.openai.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.openai.com",
+          "+.openai.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.openai.com",
+            "+.openai.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-KEYWORD,openai",
+            "DOMAIN-SUFFIX,openai.com",
+            "DOMAIN-KEYWORD,openai",
+            "DOMAIN-SUFFIX,openai.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.openai.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.openai.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "claude.ai",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.claude.ai"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.claude.ai"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-KEYWORD,claude",
+            "DOMAIN-SUFFIX,claude.ai"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.claude.ai"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.claude.ai"
+          ]
+        },
+        {
+          "position": 25,
+          "rule": "RULE-SET,tld-not-cn,🚀 节点选择",
+          "evidence": [
+            "+.ai"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "gemini.google.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.gemini.google.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.gemini.google.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN,gemini.google.com",
+            "DOMAIN-SUFFIX,gemini.google.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.google.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.google.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "challenges.cloudflare.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.challenges.cloudflare.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.challenges.cloudflare.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,challenges.cloudflare.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.cloudflare.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "auth0.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.auth0.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.auth0.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,auth0.com",
+            "DOMAIN-SUFFIX,auth0.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.auth0.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "js.stripe.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.js.stripe.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.js.stripe.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,stripe.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.stripe.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "apps.mzstatic.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.apps.mzstatic.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.apps.mzstatic.com"
+          ]
+        },
+        {
+          "position": 19,
+          "rule": "RULE-SET,apple,🍎 苹果服务",
+          "evidence": [
+            "+.apps.mzstatic.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.mzstatic.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "apps.mzstatic.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "guzzoni.apple.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.guzzoni.apple.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.guzzoni.apple.com"
+          ]
+        },
+        {
+          "position": 19,
+          "rule": "RULE-SET,apple,🍎 苹果服务",
+          "evidence": [
+            "+.guzzoni.apple.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.apple.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "guzzoni.apple.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "www.bing.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.www.bing.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.www.bing.com"
+          ]
+        },
+        {
+          "position": 17,
+          "rule": "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+          "evidence": [
+            "DOMAIN-SUFFIX,bing.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.bing.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.www.bing.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "cn.bing.com",
+      "first_domain_match": {
+        "position": 17,
+        "rule": "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+        "evidence": [
+          "DOMAIN-SUFFIX,bing.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 17,
+          "rule": "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+          "evidence": [
+            "DOMAIN-SUFFIX,bing.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.bing.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.cn.bing.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "byteoversea.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.byteoversea.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.byteoversea.com"
+          ]
+        },
+        {
+          "position": 12,
+          "rule": "RULE-SET,TikTok,🎵 TikTok",
+          "evidence": [
+            "DOMAIN-SUFFIX,byteoversea.com"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,byteoversea.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "trae.ai",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.trae.ai"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.trae.ai"
+          ]
+        },
+        {
+          "position": 12,
+          "rule": "RULE-SET,TikTok,🎵 TikTok",
+          "evidence": [
+            "DOMAIN-SUFFIX,trae.ai"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.trae.ai"
+          ]
+        },
+        {
+          "position": 25,
+          "rule": "RULE-SET,tld-not-cn,🚀 节点选择",
+          "evidence": [
+            "+.ai"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "marscode.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.marscode.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.marscode.com"
+          ]
+        },
+        {
+          "position": 12,
+          "rule": "RULE-SET,TikTok,🎵 TikTok",
+          "evidence": [
+            "DOMAIN-SUFFIX,marscode.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.marscode.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "tiktok.com",
+      "first_domain_match": {
+        "position": 12,
+        "rule": "RULE-SET,TikTok,🎵 TikTok",
+        "evidence": [
+          "DOMAIN-SUFFIX,tiktok.com",
+          "DOMAIN-KEYWORD,tiktok"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 12,
+          "rule": "RULE-SET,TikTok,🎵 TikTok",
+          "evidence": [
+            "DOMAIN-SUFFIX,tiktok.com",
+            "DOMAIN-KEYWORD,tiktok"
+          ]
+        },
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,tiktok.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.tiktok.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.tiktok.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "capcut.com",
+      "first_domain_match": {
+        "position": 12,
+        "rule": "RULE-SET,TikTok,🎵 TikTok",
+        "evidence": [
+          "DOMAIN-SUFFIX,capcut.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 12,
+          "rule": "RULE-SET,TikTok,🎵 TikTok",
+          "evidence": [
+            "DOMAIN-SUFFIX,capcut.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "telegram.org",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.telegram.org"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "web.telegram.org",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.telegram.org"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "t.me",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.t.me"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.t.me"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.t.me"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "api.telegram.org",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.telegram.org"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.telegram.org"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "linux.do",
+      "first_domain_match": {
+        "position": 7,
+        "rule": "DOMAIN-SUFFIX,linux.do,🚀 节点选择",
+        "evidence": [
+          "DOMAIN-SUFFIX,linux.do"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 7,
+          "rule": "DOMAIN-SUFFIX,linux.do,🚀 节点选择",
+          "evidence": [
+            "DOMAIN-SUFFIX,linux.do"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.linux.do"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.linux.do"
+          ]
+        },
+        {
+          "position": 25,
+          "rule": "RULE-SET,tld-not-cn,🚀 节点选择",
+          "evidence": [
+            "+.do"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "open.cd",
+      "first_domain_match": {
+        "position": 8,
+        "rule": "DOMAIN-SUFFIX,open.cd,🎯 全球直连",
+        "evidence": [
+          "DOMAIN-SUFFIX,open.cd"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 8,
+          "rule": "DOMAIN-SUFFIX,open.cd,🎯 全球直连",
+          "evidence": [
+            "DOMAIN-SUFFIX,open.cd"
+          ]
+        },
+        {
+          "position": 25,
+          "rule": "RULE-SET,tld-not-cn,🚀 节点选择",
+          "evidence": [
+            "+.cd"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "clash.razord.top",
+      "first_domain_match": {
+        "position": 9,
+        "rule": "DOMAIN,clash.razord.top,🎯 全球直连",
+        "evidence": [
+          "DOMAIN,clash.razord.top"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 9,
+          "rule": "DOMAIN,clash.razord.top,🎯 全球直连",
+          "evidence": [
+            "DOMAIN,clash.razord.top"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "yacd.haishan.me",
+      "first_domain_match": {
+        "position": 10,
+        "rule": "DOMAIN,yacd.haishan.me,🎯 全球直连",
+        "evidence": [
+          "DOMAIN,yacd.haishan.me"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 10,
+          "rule": "DOMAIN,yacd.haishan.me,🎯 全球直连",
+          "evidence": [
+            "DOMAIN,yacd.haishan.me"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "rfc.uhdnow.com",
+      "first_domain_match": {
+        "position": 11,
+        "rule": "DOMAIN,rfc.uhdnow.com,JP-RFCHost",
+        "evidence": [
+          "DOMAIN,rfc.uhdnow.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 11,
+          "rule": "DOMAIN,rfc.uhdnow.com,JP-RFCHost",
+          "evidence": [
+            "DOMAIN,rfc.uhdnow.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "dl.google.com",
+      "first_domain_match": {
+        "position": 15,
+        "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+        "evidence": [
+          "DOMAIN-SUFFIX,dl.google.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 15,
+          "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+          "evidence": [
+            "DOMAIN-SUFFIX,dl.google.com"
+          ]
+        },
+        {
+          "position": 22,
+          "rule": "RULE-SET,google,🚀 节点选择",
+          "evidence": [
+            "+.dl.google.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.google.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.google.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "dl.google.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "mtalk.google.com",
+      "first_domain_match": {
+        "position": 15,
+        "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+        "evidence": [
+          "DOMAIN-SUFFIX,mtalk.google.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 15,
+          "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+          "evidence": [
+            "DOMAIN-SUFFIX,mtalk.google.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "mtalk.google.com",
+            "+.google.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.google.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "app-measurement.com",
+      "first_domain_match": {
+        "position": 15,
+        "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+        "evidence": [
+          "DOMAIN-SUFFIX,app-measurement.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 15,
+          "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+          "evidence": [
+            "DOMAIN-SUFFIX,app-measurement.com"
+          ]
+        },
+        {
+          "position": 22,
+          "rule": "RULE-SET,google,🚀 节点选择",
+          "evidence": [
+            "+.app-measurement.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.app-measurement.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "app-measurement.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "googletagmanager.com",
+      "first_domain_match": {
+        "position": 15,
+        "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+        "evidence": [
+          "DOMAIN-SUFFIX,googletagmanager.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 15,
+          "rule": "RULE-SET,GoogleCN,🎯 全球直连",
+          "evidence": [
+            "DOMAIN-SUFFIX,googletagmanager.com"
+          ]
+        },
+        {
+          "position": 22,
+          "rule": "RULE-SET,google,🚀 节点选择",
+          "evidence": [
+            "+.googletagmanager.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.googletagmanager.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "googletagmanager.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "steamcontent.com",
+      "first_domain_match": {
+        "position": 16,
+        "rule": "RULE-SET,SteamCN,🎮 Steam下载",
+        "evidence": [
+          "DOMAIN-SUFFIX,steamcontent.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 16,
+          "rule": "RULE-SET,SteamCN,🎮 Steam下载",
+          "evidence": [
+            "DOMAIN-SUFFIX,steamcontent.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.steamcontent.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "store.steampowered.com",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.steampowered.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.steampowered.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.store.steampowered.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "steamcommunity.com",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.steamcommunity.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.steamcommunity.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.steamcommunity.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "bilibili.com",
+      "first_domain_match": {
+        "position": 26,
+        "rule": "RULE-SET,direct,DIRECT",
+        "evidence": [
+          "+.bilibili.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.bilibili.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "apple.com",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.apple.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.apple.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "icloud.com",
+      "first_domain_match": {
+        "position": 18,
+        "rule": "RULE-SET,icloud,🍎 苹果服务",
+        "evidence": [
+          "+.icloud.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 18,
+          "rule": "RULE-SET,icloud,🍎 苹果服务",
+          "evidence": [
+            "+.icloud.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.icloud.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "youtube.com",
+      "first_domain_match": {
+        "position": 20,
+        "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+        "evidence": [
+          "DOMAIN-KEYWORD,youtube",
+          "DOMAIN-SUFFIX,youtube.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-KEYWORD,youtube",
+            "DOMAIN-SUFFIX,youtube.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.youtube.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.youtube.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "netflix.com",
+      "first_domain_match": {
+        "position": 20,
+        "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+        "evidence": [
+          "DOMAIN-SUFFIX,netflix.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 20,
+          "rule": "RULE-SET,ProxyMedia,🌍 国外媒体",
+          "evidence": [
+            "DOMAIN-SUFFIX,netflix.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.netflix.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.netflix.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "alibabacloud.com",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.alibabacloud.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.alibabacloud.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.alibabacloud.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "qoder.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.qoder.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.qoder.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.qoder.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.qoder.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "minimax.io",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.minimax.io"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.minimax.io"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.minimax.io"
+          ]
+        },
+        {
+          "position": 25,
+          "rule": "RULE-SET,tld-not-cn,🚀 节点选择",
+          "evidence": [
+            "+.io"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.minimax.io"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "cdn.example.edgesuite.net",
+      "first_domain_match": {
+        "position": 17,
+        "rule": "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+        "evidence": [
+          "DOMAIN-SUFFIX,edgesuite.net"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 17,
+          "rule": "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+          "evidence": [
+            "DOMAIN-SUFFIX,edgesuite.net"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.edgesuite.net"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "router.asus.com",
+      "first_domain_match": {
+        "position": 2,
+        "rule": "RULE-SET,private,🎯 全球直连",
+        "evidence": [
+          "router.asus.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 2,
+          "rule": "RULE-SET,private,🎯 全球直连",
+          "evidence": [
+            "router.asus.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.asus.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "doh.pub",
+      "first_domain_match": {
+        "position": 26,
+        "rule": "RULE-SET,direct,DIRECT",
+        "evidence": [
+          "+.doh.pub"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.doh.pub"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "dns.alidns.com",
+      "first_domain_match": {
+        "position": 26,
+        "rule": "RULE-SET,direct,DIRECT",
+        "evidence": [
+          "+.alidns.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "+.alidns.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "fonts.googleapis.com",
+      "first_domain_match": {
+        "position": 22,
+        "rule": "RULE-SET,google,🚀 节点选择",
+        "evidence": [
+          "+.fonts.googleapis.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 22,
+          "rule": "RULE-SET,google,🚀 节点选择",
+          "evidence": [
+            "+.fonts.googleapis.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.googleapis.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.googleapis.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "fonts.googleapis.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "fonts.gstatic.com",
+      "first_domain_match": {
+        "position": 22,
+        "rule": "RULE-SET,google,🚀 节点选择",
+        "evidence": [
+          "+.fonts.gstatic.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 22,
+          "rule": "RULE-SET,google,🚀 节点选择",
+          "evidence": [
+            "+.fonts.gstatic.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.gstatic.com"
+          ]
+        },
+        {
+          "position": 24,
+          "rule": "RULE-SET,gfw,🚀 节点选择",
+          "evidence": [
+            "+.gstatic.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "fonts.gstatic.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "www.apple.com",
+      "first_domain_match": {
+        "position": 19,
+        "rule": "RULE-SET,apple,🍎 苹果服务",
+        "evidence": [
+          "+.www.apple.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 19,
+          "rule": "RULE-SET,apple,🍎 苹果服务",
+          "evidence": [
+            "+.www.apple.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.apple.com"
+          ]
+        },
+        {
+          "position": 26,
+          "rule": "RULE-SET,direct,DIRECT",
+          "evidence": [
+            "www.apple.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "api.smoot.apple.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.smoot.apple.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.smoot.apple.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.apple.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "gateway.icloud.com",
+      "first_domain_match": {
+        "position": 6,
+        "rule": "RULE-SET,ai,🤖 AI",
+        "evidence": [
+          "+.gateway.icloud.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 6,
+          "rule": "RULE-SET,ai,🤖 AI",
+          "evidence": [
+            "+.gateway.icloud.com"
+          ]
+        },
+        {
+          "position": 18,
+          "rule": "RULE-SET,icloud,🍎 苹果服务",
+          "evidence": [
+            "+.icloud.com"
+          ]
+        },
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.icloud.com"
+          ]
+        }
+      ]
+    },
+    {
+      "domain": "appleid.apple.com",
+      "first_domain_match": {
+        "position": 23,
+        "rule": "RULE-SET,proxy,🚀 节点选择",
+        "evidence": [
+          "+.apple.com"
+        ]
+      },
+      "all_domain_matches": [
+        {
+          "position": 23,
+          "rule": "RULE-SET,proxy,🚀 节点选择",
+          "evidence": [
+            "+.apple.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
