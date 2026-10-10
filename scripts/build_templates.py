@@ -47,10 +47,12 @@ def build(platform):
     groups[:] = [g for g in groups if g['name'] != '🆎 AdBlock']
 
     if platform == 'stash':
-        cfg = {k: cfg[k] for k in ('mixed-port', 'allow-lan', 'mode', 'log-level', 'ipv6', 'external-controller', 'dns', 'proxies', 'proxy-groups', 'rule-providers', 'rules')}
+        cfg = {k: cfg[k] for k in ('mixed-port', 'allow-lan', 'mode', 'log-level', 'ipv6', 'external-controller', 'unified-delay', 'tcp-concurrent', 'dns', 'proxies', 'proxy-groups', 'rule-providers', 'rules')}
         cfg['mixed-port'] = 7890
         cfg['allow-lan'] = True
         cfg['external-controller'] = '0.0.0.0:9090'
+        cfg['unified-delay'] = True
+        cfg['tcp-concurrent'] = True
         old = cfg['dns']
         # Keep platform-specific DNS fields separate.
         cfg['dns'] = {

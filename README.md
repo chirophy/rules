@@ -23,6 +23,8 @@
 
 Mihomo 使用 respect-rules，Stash 使用 follow-rule；两端开启顶层与 DNS IPv6。默认及节点 DNS 使用阿里、腾讯 DoH，国外 geosite policy 使用带策略组后缀的 Cloudflare、Google DoH。Mihomo 另有 direct-nameserver。Stash 的 DNS 策略组后缀和实际 IPv6 行为仍需客户端验证。
 
+Stash 模板按用户要求增加 `unified-delay: true`、`tcp-concurrent: true`；已验证生成结果包含这两个字段，客户端实际行为尚未实机验证。
+
 Stash 模板目标为 iOS/tvOS 3.6+、macOS 4.3+。iOS/tvOS 不支持进程规则。模板写入 `mixed-port: 7890`、`allow-lan: true`，局域网共享还需在客户端启用“允许局域网连接”。两端保留 `external-controller: 0.0.0.0:9090`；模板未配置管理密钥，导入前请按自身需求限制管理接口访问。Stash 是否采用该字段尚未实机确认。
 
 结构检查通过不代表客户端启动或服务器连通性通过。未执行 Mihomo 内核启动和 Stash 实机导入测试；每个节点输出 `udp: true` 也不代表服务器支持 UDP。

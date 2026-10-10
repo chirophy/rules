@@ -40,6 +40,7 @@ def validate(cfg, baseline, platform):
         assert cfg['dns']['fake-ip-filter'] == [v for v in baseline['dns']['fake-ip-filter'] if v != '*.msftconnecttest.com']
         assert cfg['mixed-port'] == 7890 and cfg['allow-lan'] is True
         assert cfg['external-controller'] == '0.0.0.0:9090'
+        assert cfg['unified-delay'] is True and cfg['tcp-concurrent'] is True
     if platform == 'mihomo':
         assert cfg['dns']['direct-nameserver'] == ['https://dns.alidns.com/dns-query', 'https://doh.pub/dns-query']
         assert cfg['dns']['direct-nameserver-follow-policy'] is False

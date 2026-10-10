@@ -19,6 +19,7 @@
 - DNS 字段分别使用 Mihomo respect-rules、Stash follow-rule；按官方文档核实，不依赖未知字段被忽略。
 - Stash 目标为 iOS/tvOS 3.6+、macOS 4.3+，进程规则仅在支持的平台生效。
 - Stash 保留 mixed-port: 7890、allow-lan: true；不把字段存在说成已经开启客户端局域网共享。
+- Stash 按用户要求写入 unified-delay: true、tcp-concurrent: true；字段已写入不代表客户端行为已实机验证。
 - 不在源码、测试、文档、日志或发布文件中添加真实密码、UUID、服务器参数和订阅凭据。测试使用保留文档地址及虚构参数。
 - 不加载外部 JavaScript，不发送或持久化用户输入；将输入转义后再插入 DOM。
 - 公开导出只使用 `scripts/prepare_public.py` 明确清单；`.private`、`.cache`、`.tools`、原始基准都不能上传。
