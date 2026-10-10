@@ -2,7 +2,7 @@
 
 浏览器节点转换器：粘贴 VMess、VLESS、Trojan、SS 链接，选择内核，生成并下载对应 YAML。
 
-网站地址：[GitHub Pages](https://chirophy.github.io/rules/)。部署状态以仓库 Pages 设置和实际访问结果为准。也可下载仓库后打开 `index.html` 或 `model_new_updated.html`。
+网站地址：[GitHub Pages](https://chirophy.github.io/rules/)。部署状态以仓库 Pages 设置和实际访问结果为准。也可下载仓库后打开 `index.html`。
 
 ## 公开版与隐私
 
@@ -39,7 +39,7 @@ python scripts/validate_templates.py
 python scripts/prepare_public.py
 ```
 
-生成器同时更新两份独立模板、转换器与 Pages 入口。验证覆盖严格 YAML、重复键、节点和策略组引用、规则集引用、策略组环路、分流顺序、模板一致性、缺失节点阻止生成、输出转义和实际生成节点数量。测试仅使用虚构节点。
+生成器同时更新两份独立模板和唯一网页 `index.html`。维护约定统一保存在 `AGENTS.md`。验证覆盖严格 YAML、重复键、节点和策略组引用、规则集引用、策略组环路、分流顺序、模板一致性、缺失节点阻止生成、输出转义和实际生成节点数量。测试仅使用虚构节点。
 
 重新编译样式：
 

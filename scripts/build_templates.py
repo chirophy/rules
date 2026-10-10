@@ -116,7 +116,7 @@ def build(platform):
 
 def main():
     (ROOT / 'templates').mkdir(exist_ok=True)
-    html_path = ROOT / 'model_new_updated.html'
+    html_path = ROOT / 'index.html'
     html = html_path.read_text(encoding='utf-8')
     for platform, variable in [('mihomo', 'CLASH_TEMPLATE'), ('stash', 'STASH_TEMPLATE')]:
         text = build(platform)
@@ -127,8 +127,7 @@ def main():
     html = html.replace('Template: rules-baseline.yaml', 'Templates: mihomo.yaml / stash.yaml')
     html = html.replace('Stash / Clash Premium', 'Stash')
     html_path.write_text(html, encoding='utf-8')
-    (ROOT / 'index.html').write_text(html, encoding='utf-8')
-    print('Generated both templates; HTML and Pages entry synchronized.')
+    print('Generated both templates; index.html synchronized.')
 
 
 if __name__ == '__main__':

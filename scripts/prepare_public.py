@@ -11,8 +11,8 @@ sys.path.insert(0, str(ROOT / '.tools'))
 import yaml
 
 FILES = [
-    '.gitignore', '.nojekyll', 'AGENTS.md', 'agent.md', 'README.md',
-    'index.html', 'model_new_updated.html', 'rules-baseline.yaml',
+    '.gitignore', '.nojekyll', 'AGENTS.md', 'README.md',
+    'index.html', 'rules-baseline.yaml',
     'requirements.txt', 'tailwind.config.cjs',
     'assets/tailwind-input.css', 'assets/tailwind.css',
     'templates/mihomo.yaml', 'templates/stash.yaml',
@@ -54,8 +54,7 @@ def main():
         for name, pattern in patterns.items():
             assert not re.search(pattern, text), f'{name} found: {relative}'
         contents[relative] = text
-    html = contents['model_new_updated.html']
-    assert html == contents['index.html'], 'Pages entry drift'
+    html = contents['index.html']
     assert not re.search(r'<script\b[^>]*\bsrc\s*=', html, re.I), 'External JavaScript'
     assert 'FIXED_V6_PROXIES' not in html
     assert not re.search(r'\b(?:fetch|XMLHttpRequest|localStorage|sessionStorage|sendBeacon|WebSocket)\s*[.(]', html)

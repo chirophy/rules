@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'model_new_updated.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.ok(!html.includes('FIXED_V6_PROXIES'));
 let code = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
 const elements = new Map();

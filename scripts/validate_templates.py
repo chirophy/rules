@@ -85,7 +85,7 @@ def validate(cfg, baseline, platform):
 
 def main():
     baseline = yaml.load((ROOT / 'rules-baseline.yaml').read_text(encoding='utf-8-sig'), Loader=StrictLoader)
-    html = (ROOT / 'model_new_updated.html').read_text(encoding='utf-8')
+    html = (ROOT / 'index.html').read_text(encoding='utf-8')
     names = ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo', 'JP-RFCHost', 'HK-TEST']
     fake = [{'name': n, 'type': 'ss', 'server': '192.0.2.1', 'port': 443,
              'cipher': 'aes-128-gcm', 'password': 'TEST-ONLY', 'udp': True} for n in names]
