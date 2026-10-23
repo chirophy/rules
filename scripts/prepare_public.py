@@ -1,6 +1,7 @@
 """Export an explicit public file list and scan without printing sensitive values."""
 from pathlib import Path
 import hashlib
+import ipaddress
 import json
 import re
 import shutil
@@ -27,6 +28,23 @@ FILES = [
 
 def main():
     forbidden_values = set()
+    local_source = ROOT / '已脱敏.yaml'
+    if local_source.exists():
+        source = yaml.safe_load(local_source.read_text(encoding='utf-8-sig'))
+        for node in source.get('proxies', []):
+            # Node names and chain names are public; connection parameters are not.
+            for key in ('password', 'uuid', 'username'):
+                value = node.get(key)
+                if value and len(str(value)) >= 6:
+                    forbidden_values.add(str(value))
+            try:
+                ipaddress.ip_address(str(node.get('server', '')))
+                forbidden_values.add(str(node['server']))
+            except ValueError:
+                pass
+            for value in node.get('reality-opts', {}).values():
+                if value and len(str(value)) >= 6:
+                    forbidden_values.add(str(value))
     private_html = ROOT / '.private' / 'model_new_updated.before-publication.html'
     if private_html.exists():
         text = private_html.read_text(encoding='utf-8')
@@ -48,6 +66,7 @@ def main():
         'local personal path': r'(?i)(?:[A-Z]:[\\/](?:Users|Code)[\\/]|/home/[A-Za-z0-9_.-]+/)',
     }
     contents = {}
+    assert '已脱敏.yaml' not in FILES and 'rules-merged.yaml' not in FILES
     for relative in FILES:
         text = (ROOT / relative).read_text(encoding='utf-8-sig')
         assert not any(value in text for value in forbidden_values), f'Private parameter found: {relative}'

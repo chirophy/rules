@@ -1,493 +1,447 @@
-# 脱敏分流基准；无节点配置，不能直接导入客户端。
+# Public routing and chain blueprint; contains no node connection parameters.
 mixed-port: 7890
 allow-lan: true
 mode: rule
+unified-delay: true
+tcp-concurrent: true
 log-level: info
 ipv6: true
 external-controller: 0.0.0.0:9090
-unified-delay: true
-tcp-concurrent: true
-profile:
-  store-selected: true
-  store-fake-ip: true
-geo-auto-update: true
-geo-update-interval: 24
-geox-url:
-  geoip: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat
-  geosite: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat
-  mmdb: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb
 dns:
   enable: true
-  follow-rule: true
   respect-rules: true
-  listen: 0.0.0.0:53
+  enhanced-mode: fake-ip
+  follow-rule: true
   ipv6: true
   default-nameserver:
-  - 223.5.5.5
-  - 119.29.29.29
-  proxy-server-nameserver:
-  - https://doh.pub/dns-query
-  - 223.5.5.5
+    - 223.5.5.5
+    - 119.29.29.29
   nameserver:
-  - https://dns.alidns.com/dns-query
-  - https://doh.pub/dns-query
-  fallback:
-  - https://8.8.8.8/dns-query
-  - https://1.1.1.1/dns-query
-  fallback-filter:
-    geoip: true
-    geoip-code: CN
-    ipcidr:
-    - 240.0.0.0/4
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  nameserver-policy:
+    geosite:geolocation-!cn:
+      - https://1.1.1.1/dns-query#🚀 节点选择
+      - https://8.8.8.8/dns-query#🚀 节点选择
   fake-ip-filter:
-  - '*.lan'
-  - '*.localdomain'
-  - '*.example'
-  - '*.invalid'
-  - '*.localhost'
-  - '*.test'
-  - '*.local'
-  - '*.home.arpa'
-  - router.asus.com
-  - localhost.sec.qq.com
-  - localhost.ptlogin2.qq.com
-  - +.msftconnecttest.com
-  - +.stun.*.*
-  - +.stun.*.*.*
-  - +.stun.*.*.*.*
-  - +.stun.*.*.*.*.*
-  - lens.l.google.com
-  - '*.n.n.srv.nintendo.net'
-  - +.stun.playstation.net
-  - xbox.*.*.microsoft.com
-  - '*.*.xboxlive.com'
-  - '*.msftncsi.com'
-  - '*.msftconnecttest.com'
-  - +.bilibili.com
-  - +.bilibili.cn
-  - +.hdslb.com
-  - +.bilivideo.com
-  - +.bilivideo.cn
-  - +.acgvideo.com
-  - +.biliapi.net
-  - +.biliapi.com
-  - +.biligame.com
-tun:
-  enable: true
-  stack: mixed
-  auto-route: true
-  auto-detect-interface: true
-  endpoint-independent-nat: true
-  dns-hijack:
-  - any:53
-  - tcp://any:53
-sniffer:
-  enable: true
-  sniff:
-    HTTP:
-      ports:
-      - 80
-    TLS:
-      ports:
-      - 443
-    QUIC:
-      ports:
-      - 443
-proxies: []
+    - '*.lan'
+    - '*.localdomain'
+    - '*.example'
+    - '*.invalid'
+    - '*.localhost'
+    - '*.test'
+    - '*.local'
+    - '*.home.arpa'
+    - router.asus.com
+    - localhost.sec.qq.com
+    - localhost.ptlogin2.qq.com
+    - +.msftconnecttest.com
+    - +.stun.*.*
+    - +.stun.*.*.*
+    - +.stun.*.*.*.*
+    - +.stun.*.*.*.*.*
+    - lens.l.google.com
+    - '*.n.n.srv.nintendo.net'
+    - +.stun.playstation.net
+    - xbox.*.*.microsoft.com
+    - '*.*.xboxlive.com'
+    - '*.msftncsi.com'
 proxy-groups:
-- name: 🚀 节点选择
-  type: select
-  proxies:
-  - ♻️ 自动选择
-  - DIRECT
-  - 🇯🇵 日本-最优
-  - 🇭🇰 港澳台-最优
-  - 🇺🇸 美国-最优
-  - HK-Mhyidc-CM
-  - HK-ToToTel-三网
-  - HK-100TB-三网
-  - HK-UQ-三网
-  - HK-CNIX
-  - HK-RFCHost
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-  - HK-Mhyidc-V6
-  - JP-Mhyidc-V6
-  - MO-Mhyidc-V6
-- name: ♻️ 自动选择
-  type: url-test
-  proxies:
-  - HK-Mhyidc-CM
-  - HK-ToToTel-三网
-  - HK-100TB-三网
-  - HK-UQ-三网
-  - HK-CNIX
-  - HK-RFCHost
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-  - HK-Mhyidc-V6
-  - JP-Mhyidc-V6
-  - MO-Mhyidc-V6
-  url: http://captive.apple.com/generate_204
-  interval: 300
-  tolerance: 50
-  lazy: true
-- name: 🇯🇵 日本-最优
-  type: url-test
-  proxies:
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - JP-Mhyidc-V6
-  url: http://captive.apple.com/generate_204
-  interval: 300
-  tolerance: 50
-  lazy: true
-- name: 🇭🇰 港澳台-最优
-  type: url-test
-  proxies:
-  - HK-Mhyidc-CM
-  - HK-ToToTel-三网
-  - HK-100TB-三网
-  - HK-UQ-三网
-  - HK-CNIX
-  - HK-RFCHost
-  - HK-Mhyidc-V6
-  - MO-Mhyidc-V6
-  url: http://captive.apple.com/generate_204
-  interval: 300
-  tolerance: 50
-  lazy: true
-- name: 🇺🇸 美国-最优
-  type: url-test
-  proxies:
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-  url: http://captive.apple.com/generate_204
-  interval: 300
-  tolerance: 50
-  lazy: true
-- name: 🌍 国外媒体
-  type: select
-  proxies:
-  - 🚀 节点选择
-  - ♻️ 自动选择
-  - 🎯 全球直连
-  - HK-Mhyidc-CM
-  - HK-ToToTel-三网
-  - HK-100TB-三网
-  - HK-UQ-三网
-  - HK-CNIX
-  - HK-RFCHost
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-  - HK-Mhyidc-V6
-  - JP-Mhyidc-V6
-  - MO-Mhyidc-V6
-- name: 📲 电报信息
-  type: select
-  proxies:
-  - 🚀 节点选择
-  - ♻️ 自动选择
-  - 🎯 全球直连
-  - HK-Mhyidc-CM
-  - HK-ToToTel-三网
-  - HK-100TB-三网
-  - HK-UQ-三网
-  - HK-CNIX
-  - HK-RFCHost
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-  - HK-Mhyidc-V6
-  - JP-Mhyidc-V6
-  - MO-Mhyidc-V6
-- name: Ⓜ️ 微软服务
-  type: select
-  proxies:
-  - 🎯 全球直连
-  - 🚀 节点选择
-  - 🇯🇵 日本-最优
-  - 🇭🇰 港澳台-最优
-  - 🇺🇸 美国-最优
-- name: 🍎 苹果服务
-  type: select
-  proxies:
-  - 🎯 全球直连
-  - 🚀 节点选择
-  - 🇯🇵 日本-最优
-  - 🇭🇰 港澳台-最优
-  - 🇺🇸 美国-最优
-- name: 🎵 TikTok
-  type: select
-  proxies:
-  - 🇺🇸 美国-最优
-  - 🇯🇵 日本-最优
-  - 🚀 节点选择
-  - JP-DMIT
-  - JP-GoMAMi-三网
-  - JP-100TB-三网
-  - JPMAX-100TB-三网
-  - JP-ISIF-三网
-  - JP-Acck-三网
-  - JP-Rado-CM/CT
-  - JP-RFCHost
-  - LA.HK-VmShell-三网
-  - LA-VMRack-三网
-  - LA-RN-中转
-  - SJC-VmShell-中转
-  - SJC-V.PS
-- name: 🎮 Steam下载
-  type: select
-  proxies:
-  - 🎯 全球直连
-  - 🚀 节点选择
-  - 🇯🇵 日本-最优
-  - 🇭🇰 港澳台-最优
-  - 🇺🇸 美国-最优
-- name: 🎯 全球直连
-  type: select
-  proxies:
-  - DIRECT
-  - 🚀 节点选择
-  - ♻️ 自动选择
-- name: 🛑 全球拦截
-  type: select
-  proxies:
-  - REJECT
-  - DIRECT
-- name: 🍃 应用净化
-  type: select
-  proxies:
-  - REJECT
-  - DIRECT
-- name: 🆎 AdBlock
-  type: select
-  proxies:
-  - REJECT
-  - DIRECT
-- name: 🐟 漏网之鱼
-  type: select
-  proxies:
-  - 🚀 节点选择
-  - ♻️ 自动选择
-  - 🎯 全球直连
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - DIRECT
+      - HK-Mhyidc-CM
+      - HK-HKC
+      - HK-HKC-80M
+      - HK-IPLC
+      - HK-BWL
+      - HK-ToToTel-CM
+      - HK-100TB
+      - HK-UQ-CM
+      - JP-IPLC
+      - JP-DMIT
+      - JP-GoMaMi
+      - JP-100TB
+      - JPMAX-100TB
+      - JP-ISIF
+      - JP-RFCHost
+      - JP-KFCHost
+      - JP-Acck
+      - JP-Rado-CM/CT
+      - LA.HK-VmShell-CM
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: ♻️ 自动选择
+    type: url-test
+    proxies:
+      - HK-Mhyidc-CM
+      - HK-HKC
+      - HK-HKC-80M
+      - HK-IPLC
+      - HK-BWL
+      - HK-ToToTel-CM
+      - HK-100TB
+      - HK-UQ-CM
+      - JP-IPLC
+      - JP-DMIT
+      - JP-GoMaMi
+      - JP-100TB
+      - JPMAX-100TB
+      - JP-ISIF
+      - JP-RFCHost
+      - JP-KFCHost
+      - JP-Acck
+      - JP-Rado-CM/CT
+      - LA.HK-VmShell-CM
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+    interval: 300
+    lazy: true
+  - name: 🇭🇰 HK Route
+    type: select
+    proxies:
+      - HK-HKC
+      - HK-IPLC
+      - HK-HKC-80M
+  - name: 🇯🇵 JP Route
+    type: select
+    proxies:
+      - JP-DMIT
+      - JP-IPLC
+      - JP-GoMaMi
+      - JPMAX-100TB
+      - JP-ISIF
+      - JP-RFCHost
+  - name: 🤖 AI
+    type: select
+    proxies:
+      - LA-VMRack
+      - LA-DMIT
+      - LA-Zgo
+  - name: 🌍 国外媒体
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - HK-HKC
+      - HK-HKC-80M
+      - HK-BWL
+      - HK-100TB
+      - JP-DMIT
+      - JP-GoMaMi
+      - JP-100TB
+      - JPMAX-100TB
+      - JP-ISIF
+      - JP-RFCHost
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - HK-Mhyidc-CM
+      - HK-HKC
+      - HK-HKC-80M
+      - HK-IPLC
+      - HK-BWL
+      - HK-ToToTel-CM
+      - HK-100TB
+      - HK-UQ-CM
+      - JP-IPLC
+      - JP-DMIT
+      - JP-GoMaMi
+      - JP-100TB
+      - JPMAX-100TB
+      - JP-ISIF
+      - JP-RFCHost
+      - JP-KFCHost
+      - JP-Acck
+      - JP-Rado-CM/CT
+      - LA.HK-VmShell-CM
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+      - HK-BWL
+      - HK-100TB
+      - JP-100TB
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: 🍎 苹果服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+      - HK-BWL
+      - HK-100TB
+      - JP-100TB
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: 🎵 TikTok
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - JP-DMIT
+      - JP-GoMaMi
+      - JP-100TB
+      - JPMAX-100TB
+      - JP-ISIF
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+  - name: 🎮 Steam下载
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+      - HK-BWL
+      - HK-100TB
+      - JP-100TB
+      - LA-VMRack
+      - LA-DMIT
+      - LA-RN
+      - LA-Zgo
+      - SJC-VmShell
+      - SJC-V.PS
+      - DE-Mhyidc
+      - HK-Mhyidc-V6
+      - JP-Mhyidc-V6
+      - MO-Mhyidc-V6
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+  - name: 🍃 应用净化
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - 🎯 全球直连
 rule-providers:
   BanAD:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
-    path: ./rules/BanAD.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml
     interval: 86400
   BanProgramAD:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list
-    path: ./rules/BanProgramAD.list
-    interval: 86400
-  reject:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
-    path: ./ruleset/reject.yaml
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Privacy/Privacy.yaml
     interval: 86400
   private:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
-    path: ./ruleset/private.yaml
     interval: 86400
-  GoogleCN:
-    type: http
-    behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list
-    path: ./rules/GoogleCN.list
-    interval: 86400
+    format: yaml
   SteamCN:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list
-    path: ./rules/SteamCN.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/SteamCN/SteamCN.yaml
     interval: 86400
   Microsoft:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list
-    path: ./rules/Microsoft.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.yaml
     interval: 86400
   icloud:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt
-    path: ./ruleset/icloud.yaml
     interval: 86400
+    format: yaml
   apple:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
-    path: ./ruleset/apple.yaml
     interval: 86400
+    format: yaml
   ProxyMedia:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list
-    path: ./rules/ProxyMedia.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia.yaml
     interval: 86400
   telegramcidr:
     type: http
     behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
-    path: ./ruleset/telegramcidr.yaml
     interval: 86400
+    format: yaml
   google:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt
-    path: ./ruleset/google.yaml
     interval: 86400
+    format: yaml
   proxy:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt
-    path: ./ruleset/proxy.yaml
     interval: 86400
+    format: yaml
   gfw:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt
-    path: ./ruleset/gfw.yaml
     interval: 86400
+    format: yaml
   tld-not-cn:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt
-    path: ./ruleset/tld-not-cn.yaml
     interval: 86400
+    format: yaml
   direct:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
-    path: ./ruleset/direct.yaml
     interval: 86400
+    format: yaml
   lancidr:
     type: http
     behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
-    path: ./ruleset/lancidr.yaml
     interval: 86400
+    format: yaml
   cncidr:
     type: http
     behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
-    path: ./ruleset/cncidr.yaml
     interval: 86400
+    format: yaml
   applications:
     type: http
     behavior: classical
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
-    path: ./ruleset/applications.yaml
     interval: 86400
+    format: yaml
   TikTok:
     type: http
     behavior: classical
     format: text
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list
-    path: ./rules/TikTok.list
     interval: 86400
   ai:
     type: http
     behavior: domain
     url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt
-    path: ./ruleset/ai.yaml
     interval: 86400
+    format: yaml
 rules:
-- RULE-SET,applications,🎯 全球直连
-- RULE-SET,private,🎯 全球直连
-- RULE-SET,lancidr,DIRECT,no-resolve
-- GEOIP,LAN,DIRECT,no-resolve
-- AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT
-- RULE-SET,ai,LA-VMRack-三网
-- DOMAIN-SUFFIX,linux.do,🚀 节点选择
-- DOMAIN-SUFFIX,open.cd,🎯 全球直连
-- DOMAIN,clash.razord.top,🎯 全球直连
-- DOMAIN,yacd.haishan.me,🎯 全球直连
-- DOMAIN,rfc.uhdnow.com,JP-RFCHost
-- RULE-SET,TikTok,🎵 TikTok
-- RULE-SET,BanAD,🛑 全球拦截
-- RULE-SET,BanProgramAD,🍃 应用净化
-- RULE-SET,reject,🆎 AdBlock
-- RULE-SET,GoogleCN,🎯 全球直连
-- RULE-SET,SteamCN,🎮 Steam下载
-- RULE-SET,Microsoft,Ⓜ️ 微软服务
-- RULE-SET,icloud,🍎 苹果服务
-- RULE-SET,apple,🍎 苹果服务
-- RULE-SET,ProxyMedia,🌍 国外媒体
-- RULE-SET,telegramcidr,📲 电报信息,no-resolve
-- RULE-SET,google,🚀 节点选择
-- RULE-SET,proxy,🚀 节点选择
-- RULE-SET,gfw,🚀 节点选择
-- RULE-SET,tld-not-cn,🚀 节点选择
-- RULE-SET,direct,DIRECT
-- RULE-SET,cncidr,DIRECT,no-resolve
-- GEOSITE,CN,DIRECT
-- GEOIP,CN,DIRECT
-- MATCH,🐟 漏网之鱼
+  - RULE-SET,applications,🎯 全球直连
+  - RULE-SET,private,🎯 全球直连
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  - GEOIP,LAN,DIRECT,no-resolve
+  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT
+  - RULE-SET,ai,🤖 AI
+  - DOMAIN-SUFFIX,linux.do,🚀 节点选择
+  - DOMAIN-SUFFIX,open.cd,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,rfc.uhdnow.com,JP-KFCHost
+  - RULE-SET,TikTok,🎵 TikTok
+  - RULE-SET,BanAD,🛑 全球拦截
+  - RULE-SET,BanProgramAD,🍃 应用净化
+  - GEOSITE,google-cn,🎯 全球直连
+  - RULE-SET,SteamCN,🎮 Steam下载
+  - RULE-SET,Microsoft,Ⓜ️ 微软服务
+  - RULE-SET,icloud,🍎 苹果服务
+  - RULE-SET,apple,🍎 苹果服务
+  - RULE-SET,ProxyMedia,🌍 国外媒体
+  - RULE-SET,telegramcidr,📲 电报信息,no-resolve
+  - RULE-SET,google,🚀 节点选择
+  - RULE-SET,proxy,🚀 节点选择
+  - RULE-SET,gfw,🚀 节点选择
+  - RULE-SET,tld-not-cn,🚀 节点选择
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,cncidr,DIRECT,no-resolve
+  - GEOSITE,CN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🐟 漏网之鱼
+proxies: []
+x-converter:
+  dialer-proxies:
+    HK-BWL: 🇭🇰 HK Route
+    HK-100TB: 🇭🇰 HK Route
+    JP-100TB: 🇯🇵 JP Route
+    JP-KFCHost: 🇯🇵 JP Route
+    LA-RN: SJC-V.PS
+    SJC-VmShell: SJC-V.PS
+    HK-Mhyidc-V6: 🇭🇰 HK Route
+    JP-Mhyidc-V6: 🇭🇰 HK Route
+    MO-Mhyidc-V6: 🇭🇰 HK Route

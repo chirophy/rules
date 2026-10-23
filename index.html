@@ -99,7 +99,7 @@
             backdrop-filter: blur(4px);
         }
 
-        /* Node workshop visual system; conversion logic and templates are unchanged. */
+        /* Node workshop visual system. */
         :root { color-scheme: light; --accent:#2563eb; }
         body { margin:0; height:auto!important; min-height:100vh; overflow:auto!important; padding:32px!important; background:radial-gradient(ellipse at 90% 0%,#dbeafe 0,transparent 43%),#f3f7fc; font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif; color:#1e3353; }
         body > .max-w-7xl { height:auto!important; overflow:visible!important; max-width:1280px; }
@@ -141,11 +141,33 @@
         button:focus-visible { outline:3px solid #70a8f5; outline-offset:3px; }
         @media(max-width:1023px) { body { padding:24px!important; }.intro-strip { align-items:flex-start; flex-direction:column; gap:16px; }.input-card { height:510px!important; }.output-card { height:550px!important; } }
         @media(max-width:600px) { body { padding:18px 14px!important; } header { margin-bottom:26px!important; }.intro-strip h2 { font-size:27px; }.input-card { padding:20px!important; }.output-card > div:first-child { padding:16px; }.output-card button { padding:8px 10px; }.protocols { gap:5px; } }
+        .chain-card { margin-top:22px; padding:24px; border:1px solid #dce5f1; border-radius:20px; background:#fff; box-shadow:0 8px 30px #1f446608; }
+        .chain-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+        .chain-heading h2 { font-size:17px; font-weight:700; margin:0 0 8px; }
+        .chain-card p { color:#718198; font-size:12px; line-height:1.7; }
+        .chain-actions { display:flex; gap:8px; flex-wrap:wrap; }
+        .chain-button { padding:9px 13px; border:1px solid #d5e2f5; border-radius:9px; background:#eff5ff; color:#2563eb; font-size:12px; font-weight:600; cursor:pointer; }
+        .chain-shortcut { width:100%; margin-bottom:12px; }
+        .route-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:18px; }
+        .route-group { border:1px solid #dce5f1; border-radius:12px; padding:14px; min-width:0; }
+        .route-group legend { font-size:13px; font-weight:700; padding:0 5px; }
+        .route-options { display:grid; gap:9px; max-height:190px; overflow:auto; margin-top:10px; }
+        .route-option { display:flex; gap:9px; align-items:flex-start; font-size:12px; overflow-wrap:anywhere; }
+        .route-option input { margin-top:3px; flex-shrink:0; accent-color:#2563eb; }
+        @media(max-width:600px) { .route-groups { grid-template-columns:minmax(0,1fr); } }
+        .chain-list { max-height:380px; overflow:auto; margin-top:16px; }
+        .chain-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,1fr); gap:16px; align-items:center; padding:13px 2px; border-top:1px solid #edf1f7; }
+        .chain-row label { font-size:12px; font-weight:600; overflow-wrap:anywhere; }
+        .chain-row small { display:block; margin-top:5px; color:#718198; font-size:11px; font-weight:400; }
+        .chain-select { width:100%; min-height:40px; padding:9px; border:1px solid #d5e2f5; border-radius:8px; background:#f8faff; color:#29456b; font-size:12px; }
+        .chain-select:focus-visible { outline:3px solid #70a8f5; outline-offset:2px; }
+        #chainSummary { margin-top:12px; }
+        @media(max-width:600px) { .chain-card { padding:18px; }.chain-row { grid-template-columns:minmax(0,1fr); gap:9px; } }
         @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
     </style>
 </head>
 <body class="h-screen overflow-hidden p-4 md:p-8">
-    <p class="max-w-7xl mx-auto mb-4 text-xs text-slate-500">节点链接仅在当前浏览器解析，不上传、不保存；页面不内置节点。请提供规则指定节点及至少一个 HK / MO / TW 节点。</p>
+    <p class="max-w-7xl mx-auto mb-4 text-xs text-slate-500">节点链接仅在当前浏览器解析，不上传、不保存；页面不内置节点。请提供规则指定节点。不需要中转可直接生成；开启中转后再勾选 HK / JP Route 的中转成员。</p>
     <!-- Toast Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
@@ -196,6 +218,7 @@
                     </div>
                     
                     <div class="mt-6">
+                        <button type="button" id="chainSettingsBtn" class="chain-button chain-shortcut" onclick="openChainEditor()">设置中转节点 ↓</button>
                         <div class="flex items-center gap-1 mb-3 bg-slate-100 rounded-xl p-1">
                             <button id="kernelBtnMihomo" onclick="setKernel('mihomo')" class="flex-1 text-xs font-bold py-2 rounded-lg transition-all bg-white text-blue-600 shadow">Mihomo</button>
                             <button id="kernelBtnStash" onclick="setKernel('stash')" class="flex-1 text-xs font-bold py-2 rounded-lg transition-all text-slate-500">Stash</button>
@@ -238,7 +261,7 @@
                         <pre id="outputArea" class="text-xs leading-relaxed whitespace-pre-wrap opacity-40"># 你的下一次连接，从这里开始。
 
 # 1. 在左侧粘贴节点链接
-# 2. 选择 Mihomo 或 Stash
+# 2. 选择客户端，按需设置中转节点
 # 3. 生成配置，然后下载导入客户端</pre>
                     </div>
                     <div class="bg-slate-900 px-6 py-3 border-t border-slate-800 flex justify-between items-center">
@@ -254,16 +277,32 @@
                 </div>
             </div>
         </div>
+        <section id="chainPanel" hidden class="chain-card" aria-labelledby="chainTitle">
+            <div class="chain-heading">
+                <div><h2 id="chainTitle">02 · 选择中转</h2><p>为每个落地节点选择先连接的中转出口；不需要中转时，选择“不使用中转”。</p></div>
+                <div class="chain-actions">
+                    <button type="button" class="chain-button" onclick="refreshChainEditor()">读取 / 刷新节点</button>
+                    <button type="button" class="chain-button" onclick="resetChainChoices()">恢复默认设置</button>
+                    <button type="button" class="chain-button" onclick="setRelayEnabled(false)">取消中转</button>
+                    <button type="button" class="chain-button" onclick="process()">生成配置</button>
+                </div>
+            </div>
+            <p id="chainSummary" role="status" aria-live="polite">先粘贴节点，再点击“读取 / 刷新节点”。选择仅在当前页面生效。</p>
+            <p>点击“设置中转节点”即启用中转；不需要时点击“取消中转”。HK Route 仅列出名称含 HK 的节点，JP Route 仅列出名称含 JP 的节点。再设置落地节点。组成员默认直接连接服务器；其他名称含 HK / JP 的节点默认经对应组中转，手动选择优先。</p>
+            <div id="routeGroupRows" class="route-groups"></div>
+            <div id="chainRows" class="chain-list"></div>
+        </section>
     </div>
 
     <script>
         // 内置用户提供的规则模板
-        const CLASH_TEMPLATE = "# mihomo 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。\n# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\nunified-delay: true\ntcp-concurrent: true\nprofile:\n  store-selected: true\n  store-fake-ip: true\ngeo-auto-update: true\ngeo-update-interval: 24\ngeox-url:\n  geoip: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat\n  geosite: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat\n  mmdb: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb\ndns:\n  enable: true\n  respect-rules: true\n  listen: 0.0.0.0:53\n  ipv6: true\n  enhanced-mode: fake-ip\n  fake-ip-range: 198.18.0.1/16\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  direct-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  direct-nameserver-follow-policy: false\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\n    - +.bilibili.com\n    - +.bilibili.cn\n    - +.hdslb.com\n    - +.bilivideo.com\n    - +.bilivideo.cn\n    - +.acgvideo.com\n    - +.biliapi.net\n    - +.biliapi.com\n    - +.biligame.com\ntun:\n  enable: true\n  stack: mixed\n  auto-route: true\n  auto-detect-interface: true\n  endpoint-independent-nat: true\n  dns-hijack:\n    - any:53\n    - tcp://any:53\nsniffer:\n  enable: true\n  sniff:\n    HTTP:\n      ports:\n        - 80\n    TLS:\n      ports:\n        - 443\n    QUIC:\n      ports:\n        - 443\nproxies:\n{{proxies}}\nproxy-groups:\n  - name: 🚀 节点选择\n    type: select\n    proxies:\n      - ♻️ 自动选择\n      - DIRECT\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n{{nodeList}}\n  - name: ♻️ 自动选择\n    type: url-test\n    proxies:\n{{nodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇯🇵 日本-最优\n    type: url-test\n    proxies:\n{{jpNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇭🇰 港澳台-最优\n    type: url-test\n    proxies:\n{{hkNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🇺🇸 美国-最优\n    type: url-test\n    proxies:\n{{usNodeList}}\n    url: http://captive.apple.com/generate_204\n    interval: 300\n    tolerance: 50\n    lazy: true\n  - name: 🤖 AI\n    type: select\n    proxies:\n      - LA-VMRack-三网\n      - LA-DMIT\n      - LA-Zgo\n  - name: 🌍 国外媒体\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: 📲 电报信息\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: Ⓜ️ 微软服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🍎 苹果服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎵 TikTok\n    type: select\n    proxies:\n      - 🇺🇸 美国-最优\n      - 🇯🇵 日本-最优\n      - 🚀 节点选择\n{{ttNodeList}}\n  - name: 🎮 Steam下载\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎯 全球直连\n    type: select\n    proxies:\n      - DIRECT\n      - 🚀 节点选择\n      - ♻️ 自动选择\n  - name: 🛑 全球拦截\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🍃 应用净化\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🐟 漏网之鱼\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list\n    path: ./rules/BanAD.list\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list\n    path: ./rules/BanProgramAD.list\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    path: ./ruleset/private.yaml\n    interval: 86400\n  GoogleCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list\n    path: ./rules/GoogleCN.list\n    interval: 86400\n  SteamCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list\n    path: ./rules/SteamCN.list\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list\n    path: ./rules/Microsoft.list\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    path: ./ruleset/icloud.yaml\n    interval: 86400\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    path: ./ruleset/apple.yaml\n    interval: 86400\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list\n    path: ./rules/ProxyMedia.list\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    path: ./ruleset/telegramcidr.yaml\n    interval: 86400\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    path: ./ruleset/google.yaml\n    interval: 86400\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    path: ./ruleset/proxy.yaml\n    interval: 86400\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    path: ./ruleset/gfw.yaml\n    interval: 86400\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    path: ./ruleset/tld-not-cn.yaml\n    interval: 86400\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    path: ./ruleset/direct.yaml\n    interval: 86400\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    path: ./ruleset/lancidr.yaml\n    interval: 86400\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    path: ./ruleset/cncidr.yaml\n    interval: 86400\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    path: ./ruleset/applications.yaml\n    interval: 86400\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    path: ./rules/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    path: ./ruleset/ai.yaml\n    interval: 86400\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-RFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - RULE-SET,GoogleCN,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\n";
+        const CLASH_TEMPLATE = "# mihomo 专用占位符模板；请通过 index.html 填入节点。\n# 分流、默认选择与中转关系来自 rules-baseline.yaml；不包含固定节点。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nunified-delay: true\ntcp-concurrent: true\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\ndns:\n  enable: true\n  respect-rules: true\n  enhanced-mode: fake-ip\n  ipv6: true\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\nproxy-groups:\n{{proxyGroups}}\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Privacy/Privacy.yaml\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    interval: 86400\n    format: yaml\n  SteamCN:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/SteamCN/SteamCN.yaml\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.yaml\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    interval: 86400\n    format: yaml\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    interval: 86400\n    format: yaml\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia.yaml\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    interval: 86400\n    format: yaml\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    interval: 86400\n    format: yaml\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    interval: 86400\n    format: yaml\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    interval: 86400\n    format: yaml\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    interval: 86400\n    format: yaml\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    interval: 86400\n    format: yaml\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    interval: 86400\n    format: yaml\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    interval: 86400\n    format: yaml\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    interval: 86400\n    format: yaml\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    interval: 86400\n    format: yaml\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-KFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - GEOSITE,google-cn,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\nproxies:\n{{proxies}}\n";
 
         // Stash（iOS/Mac/tvOS，Clash Premium 引擎）兼容模板
-        const STASH_TEMPLATE = "# stash 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。\n# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。\n# 适用 iOS/tvOS 3.6+、macOS 4.3+；iOS/tvOS 不支持进程规则。\n# 共享代理：Stash iOS/Mac 默认在 7890 提供 HTTP/SOCKS；请在客户端开启「允许局域网连接」。\n# 按用户要求显式输出 mixed-port: 7890 / allow-lan: true；客户端实际监听和共享开关仍需确认。\n# iOS 减负版：DNS 跟随规则、按 geosite 分流；移除 reject 及其独立广告组，广告覆盖减少。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\nunified-delay: true\ntcp-concurrent: true\ndns:\n  follow-rule: true\n  ipv6: true\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\n    - +.bilibili.com\n    - +.bilibili.cn\n    - +.hdslb.com\n    - +.bilivideo.com\n    - +.bilivideo.cn\n    - +.acgvideo.com\n    - +.biliapi.net\n    - +.biliapi.com\n    - +.biligame.com\nproxies:\n{{proxies}}\nproxy-groups:\n  - name: 🚀 节点选择\n    type: select\n    proxies:\n      - ♻️ 自动选择\n      - DIRECT\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n{{nodeList}}\n  - name: ♻️ 自动选择\n    type: url-test\n    proxies:\n{{nodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇯🇵 日本-最优\n    type: url-test\n    proxies:\n{{jpNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇭🇰 港澳台-最优\n    type: url-test\n    proxies:\n{{hkNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🇺🇸 美国-最优\n    type: url-test\n    proxies:\n{{usNodeList}}\n    interval: 300\n    lazy: true\n  - name: 🤖 AI\n    type: select\n    proxies:\n      - LA-VMRack-三网\n      - LA-DMIT\n      - LA-Zgo\n  - name: 🌍 国外媒体\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: 📲 电报信息\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\n{{nodeList}}\n  - name: Ⓜ️ 微软服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🍎 苹果服务\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎵 TikTok\n    type: select\n    proxies:\n      - 🇺🇸 美国-最优\n      - 🇯🇵 日本-最优\n      - 🚀 节点选择\n{{ttNodeList}}\n  - name: 🎮 Steam下载\n    type: select\n    proxies:\n      - 🎯 全球直连\n      - 🚀 节点选择\n      - 🇯🇵 日本-最优\n      - 🇭🇰 港澳台-最优\n      - 🇺🇸 美国-最优\n  - name: 🎯 全球直连\n    type: select\n    proxies:\n      - DIRECT\n      - 🚀 节点选择\n      - ♻️ 自动选择\n  - name: 🛑 全球拦截\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🍃 应用净化\n    type: select\n    proxies:\n      - REJECT\n      - DIRECT\n  - name: 🐟 漏网之鱼\n    type: select\n    proxies:\n      - 🚀 节点选择\n      - ♻️ 自动选择\n      - 🎯 全球直连\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    interval: 86400\n    format: yaml\n  GoogleCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list\n    interval: 86400\n  SteamCN:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    interval: 86400\n    format: yaml\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    interval: 86400\n    format: yaml\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    interval: 86400\n    format: yaml\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    interval: 86400\n    format: yaml\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    interval: 86400\n    format: yaml\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    interval: 86400\n    format: yaml\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    interval: 86400\n    format: yaml\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    interval: 86400\n    format: yaml\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    interval: 86400\n    format: yaml\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    interval: 86400\n    format: yaml\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    interval: 86400\n    format: yaml\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    interval: 86400\n    format: yaml\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-RFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - RULE-SET,GoogleCN,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\n";
+        const STASH_TEMPLATE = "# stash 专用占位符模板；请通过 index.html 填入节点。\n# 分流、默认选择与中转关系来自 rules-baseline.yaml；不包含固定节点。\n# 目标 iOS/tvOS 3.6+、macOS 4.3+；进程规则与 DNS 策略后缀的边界见 README。\nmixed-port: 7890\nallow-lan: true\nmode: rule\nunified-delay: true\ntcp-concurrent: true\nlog-level: info\nipv6: true\nexternal-controller: 0.0.0.0:9090\ndns:\n  follow-rule: true\n  ipv6: true\n  default-nameserver:\n    - 223.5.5.5\n    - 119.29.29.29\n  nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  proxy-server-nameserver:\n    - https://dns.alidns.com/dns-query\n    - https://doh.pub/dns-query\n  nameserver-policy:\n    geosite:geolocation-!cn:\n      - \"https://1.1.1.1/dns-query#🚀 节点选择\"\n      - \"https://8.8.8.8/dns-query#🚀 节点选择\"\n  fake-ip-filter:\n    - '*.lan'\n    - '*.localdomain'\n    - '*.example'\n    - '*.invalid'\n    - '*.localhost'\n    - '*.test'\n    - '*.local'\n    - '*.home.arpa'\n    - router.asus.com\n    - localhost.sec.qq.com\n    - localhost.ptlogin2.qq.com\n    - +.msftconnecttest.com\n    - +.stun.*.*\n    - +.stun.*.*.*\n    - +.stun.*.*.*.*\n    - +.stun.*.*.*.*.*\n    - lens.l.google.com\n    - '*.n.n.srv.nintendo.net'\n    - +.stun.playstation.net\n    - xbox.*.*.microsoft.com\n    - '*.*.xboxlive.com'\n    - '*.msftncsi.com'\nproxy-groups:\n{{proxyGroups}}\nrule-providers:\n  BanAD:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml\n    interval: 86400\n  BanProgramAD:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Privacy/Privacy.yaml\n    interval: 86400\n  private:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt\n    interval: 86400\n    format: yaml\n  SteamCN:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/SteamCN/SteamCN.yaml\n    interval: 86400\n  Microsoft:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.yaml\n    interval: 86400\n  icloud:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt\n    interval: 86400\n    format: yaml\n  apple:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt\n    interval: 86400\n    format: yaml\n  ProxyMedia:\n    type: http\n    behavior: classical\n    format: yaml\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia.yaml\n    interval: 86400\n  telegramcidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt\n    interval: 86400\n    format: yaml\n  google:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt\n    interval: 86400\n    format: yaml\n  proxy:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt\n    interval: 86400\n    format: yaml\n  gfw:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt\n    interval: 86400\n    format: yaml\n  tld-not-cn:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt\n    interval: 86400\n    format: yaml\n  direct:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt\n    interval: 86400\n    format: yaml\n  lancidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt\n    interval: 86400\n    format: yaml\n  cncidr:\n    type: http\n    behavior: ipcidr\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt\n    interval: 86400\n    format: yaml\n  applications:\n    type: http\n    behavior: classical\n    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt\n    interval: 86400\n    format: yaml\n  TikTok:\n    type: http\n    behavior: classical\n    format: text\n    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list\n    interval: 86400\n  ai:\n    type: http\n    behavior: domain\n    url: https://cdn.jsdelivr.net/gh/chirophy/ai_rules@main/ai.txt\n    interval: 86400\n    format: yaml\nrules:\n  - RULE-SET,applications,🎯 全球直连\n  - RULE-SET,private,🎯 全球直连\n  - RULE-SET,lancidr,DIRECT,no-resolve\n  - GEOIP,LAN,DIRECT,no-resolve\n  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOSITE,CN)),DIRECT\n  - RULE-SET,ai,🤖 AI\n  - DOMAIN-SUFFIX,linux.do,🚀 节点选择\n  - DOMAIN-SUFFIX,open.cd,🎯 全球直连\n  - DOMAIN,clash.razord.top,🎯 全球直连\n  - DOMAIN,yacd.haishan.me,🎯 全球直连\n  - DOMAIN,rfc.uhdnow.com,JP-KFCHost\n  - RULE-SET,TikTok,🎵 TikTok\n  - RULE-SET,BanAD,🛑 全球拦截\n  - RULE-SET,BanProgramAD,🍃 应用净化\n  - GEOSITE,google-cn,🎯 全球直连\n  - RULE-SET,SteamCN,🎮 Steam下载\n  - RULE-SET,Microsoft,Ⓜ️ 微软服务\n  - RULE-SET,icloud,🍎 苹果服务\n  - RULE-SET,apple,🍎 苹果服务\n  - RULE-SET,ProxyMedia,🌍 国外媒体\n  - RULE-SET,telegramcidr,📲 电报信息,no-resolve\n  - RULE-SET,google,🚀 节点选择\n  - RULE-SET,proxy,🚀 节点选择\n  - RULE-SET,gfw,🚀 节点选择\n  - RULE-SET,tld-not-cn,🚀 节点选择\n  - RULE-SET,direct,DIRECT\n  - RULE-SET,cncidr,DIRECT,no-resolve\n  - GEOSITE,CN,DIRECT\n  - GEOIP,CN,DIRECT\n  - MATCH,🐟 漏网之鱼\nproxies:\n{{proxies}}\n";
 
         // 生成唯一节点名
+        const CONVERTER_POLICY = {"groups": [{"name": "🚀 节点选择", "type": "select", "proxies": ["♻️ 自动选择", "DIRECT", "HK-Mhyidc-CM", "HK-HKC", "HK-HKC-80M", "HK-IPLC", "HK-BWL", "HK-ToToTel-CM", "HK-100TB", "HK-UQ-CM", "JP-IPLC", "JP-DMIT", "JP-GoMaMi", "JP-100TB", "JPMAX-100TB", "JP-ISIF", "JP-RFCHost", "JP-KFCHost", "JP-Acck", "JP-Rado-CM/CT", "LA.HK-VmShell-CM", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "♻️ 自动选择", "type": "url-test", "proxies": ["HK-Mhyidc-CM", "HK-HKC", "HK-HKC-80M", "HK-IPLC", "HK-BWL", "HK-ToToTel-CM", "HK-100TB", "HK-UQ-CM", "JP-IPLC", "JP-DMIT", "JP-GoMaMi", "JP-100TB", "JPMAX-100TB", "JP-ISIF", "JP-RFCHost", "JP-KFCHost", "JP-Acck", "JP-Rado-CM/CT", "LA.HK-VmShell-CM", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"], "interval": 300, "lazy": true}, {"name": "🇭🇰 HK Route", "type": "select", "proxies": ["HK-HKC", "HK-IPLC", "HK-HKC-80M"]}, {"name": "🇯🇵 JP Route", "type": "select", "proxies": ["JP-DMIT", "JP-IPLC", "JP-GoMaMi", "JPMAX-100TB", "JP-ISIF", "JP-RFCHost"]}, {"name": "🤖 AI", "type": "select", "proxies": ["LA-VMRack", "LA-DMIT", "LA-Zgo"]}, {"name": "🌍 国外媒体", "type": "select", "proxies": ["🚀 节点选择", "HK-HKC", "HK-HKC-80M", "HK-BWL", "HK-100TB", "JP-DMIT", "JP-GoMaMi", "JP-100TB", "JPMAX-100TB", "JP-ISIF", "JP-RFCHost", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "📲 电报信息", "type": "select", "proxies": ["🚀 节点选择", "HK-Mhyidc-CM", "HK-HKC", "HK-HKC-80M", "HK-IPLC", "HK-BWL", "HK-ToToTel-CM", "HK-100TB", "HK-UQ-CM", "JP-IPLC", "JP-DMIT", "JP-GoMaMi", "JP-100TB", "JPMAX-100TB", "JP-ISIF", "JP-RFCHost", "JP-KFCHost", "JP-Acck", "JP-Rado-CM/CT", "LA.HK-VmShell-CM", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "Ⓜ️ 微软服务", "type": "select", "proxies": ["🎯 全球直连", "🚀 节点选择", "HK-BWL", "HK-100TB", "JP-100TB", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "🍎 苹果服务", "type": "select", "proxies": ["🎯 全球直连", "🚀 节点选择", "HK-BWL", "HK-100TB", "JP-100TB", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "🎵 TikTok", "type": "select", "proxies": ["🚀 节点选择", "JP-DMIT", "JP-GoMaMi", "JP-100TB", "JPMAX-100TB", "JP-ISIF", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS"]}, {"name": "🎮 Steam下载", "type": "select", "proxies": ["🎯 全球直连", "🚀 节点选择", "HK-BWL", "HK-100TB", "JP-100TB", "LA-VMRack", "LA-DMIT", "LA-RN", "LA-Zgo", "SJC-VmShell", "SJC-V.PS", "DE-Mhyidc", "HK-Mhyidc-V6", "JP-Mhyidc-V6", "MO-Mhyidc-V6"]}, {"name": "🎯 全球直连", "type": "select", "proxies": ["DIRECT", "🚀 节点选择", "♻️ 自动选择"]}, {"name": "🛑 全球拦截", "type": "select", "proxies": ["REJECT", "DIRECT"]}, {"name": "🍃 应用净化", "type": "select", "proxies": ["REJECT", "DIRECT"]}, {"name": "🐟 漏网之鱼", "type": "select", "proxies": ["🚀 节点选择", "♻️ 自动选择", "🎯 全球直连"]}], "requiredNodes": ["LA-VMRack", "LA-DMIT", "LA-Zgo", "JP-KFCHost"], "dialerProxies": {"HK-BWL": "🇭🇰 HK Route", "HK-100TB": "🇭🇰 HK Route", "JP-100TB": "🇯🇵 JP Route", "JP-KFCHost": "🇯🇵 JP Route", "LA-RN": "SJC-V.PS", "SJC-VmShell": "SJC-V.PS", "HK-Mhyidc-V6": "🇭🇰 HK Route", "JP-Mhyidc-V6": "🇭🇰 HK Route", "MO-Mhyidc-V6": "🇭🇰 HK Route"}};
         const nodeNames = new Set();
         function getUniqueName(name) {
             let unique = name || 'Unnamed';
@@ -278,11 +317,8 @@
 
         // 转义 YAML 特殊字符
         function escapeYaml(str) {
-            if (!str) return '';
-            if (/[:#\{\}\[\],&\*\?\|'>=%!@`]/.test(str)) {
-                return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
-            }
-            return str;
+            // JSON strings are YAML scalars too; preserve names and credentials exactly.
+            return JSON.stringify(String(str ?? ''));
         }
 
         // Toast 通知
@@ -303,11 +339,14 @@
             };
             
             toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 min-w-[200px]`;
-            toast.innerHTML = `
-                <i class="fas ${icons[type]}"></i>
-                <span class="text-sm font-medium">${message}</span>
-            `;
-            
+            const icon = document.createElement('i');
+            icon.className = `fas ${icons[type]}`;
+            const label = document.createElement('span');
+            label.className = 'text-sm font-medium';
+            label.textContent = message;
+            toast.appendChild(icon);
+            toast.appendChild(label);
+
             container.appendChild(toast);
             
             setTimeout(() => {
@@ -330,6 +369,13 @@
                 .replace(/(https?:\/\/[^\s]+)/g, '<span class="yaml-string">$1</span>');
         }
 
+        function decodeBase64Utf8(value) {
+            let encoded = value.replace(/-/g, '+').replace(/_/g, '/');
+            while (encoded.length % 4) encoded += '=';
+            return decodeURIComponent(Array.from(atob(encoded), char =>
+                '%' + char.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
+        }
+
         function parseNode(url, lineNum) {
             url = url.trim();
             if(!url || url.startsWith('#')) return null;
@@ -338,13 +384,13 @@
                     let base64Str = url.replace('vmess://', '');
                     base64Str = base64Str.replace(/-/g, '+').replace(/_/g, '/');
                     while (base64Str.length % 4) base64Str += '=';
-                    const jsonStr = atob(base64Str);
+                    const jsonStr = decodeBase64Utf8(base64Str);
                     const c = JSON.parse(jsonStr);
                     return { 
                         name: getUniqueName(c.ps || `vmess_${lineNum}`), 
                         type: 'vmess', 
                         server: c.add, 
-                        port: parseInt(c.port), 
+                        port: Number(c.port), 
                         uuid: c.id, 
                         alterId: parseInt(c.aid) || 0,
                         cipher: 'auto',
@@ -374,8 +420,8 @@
                         name: getUniqueName(decodeURIComponent(u.hash.slice(1)) || `vless_${lineNum}`),
                         type: 'vless',
                         server: serverHost,
-                        port: parseInt(u.port) || 443,
-                        uuid: u.username,
+                        port: u.port ? Number(u.port) : 443,
+                        uuid: decodeURIComponent(u.username),
                         servername: params.sni || params.host || serverHost,
                         tls: params.security === 'tls' || params.security === 'xtls' || params.security === 'reality',
                         flow: params.flow || '',
@@ -404,8 +450,8 @@
                         name: getUniqueName(decodeURIComponent(u.hash.slice(1)) || `trojan_${lineNum}`), 
                         type: 'trojan', 
                         server: serverHost, 
-                        port: parseInt(u.port) || 443, 
-                        password: u.username, 
+                        port: u.port ? Number(u.port) : 443, 
+                        password: decodeURIComponent(u.username), 
                         tls: true,
                         sni: params.sni || serverHost,
                         network: params.type || 'tcp',
@@ -418,20 +464,24 @@
                     if (url.includes('@')) {
                         const parts = url.replace('ss://', '').split('#');
                         name = parts[1] ? decodeURIComponent(parts[1]) : name;
-                        const [conf, srvPart] = parts[0].split('@');
-                        const base64Conf = conf.replace(/-/g, '+').replace(/_/g, '/');
-                        const decoded = atob(base64Conf);
+                        const atIndex = parts[0].lastIndexOf('@');
+                        const conf = parts[0].slice(0, atIndex);
+                        const srvPart = parts[0].slice(atIndex + 1);
+                        const decoded = conf.includes(':') ? conf : decodeBase64Utf8(conf);
                         const colonIndex = decoded.indexOf(':');
                         if (colonIndex === -1) throw new Error('Invalid SS format');
-                        method = decoded.slice(0, colonIndex);
-                        password = decoded.slice(colonIndex + 1);
-                        [server, port] = srvPart.split(':');
+                        method = conf.includes(':') ? decodeURIComponent(decoded.slice(0, colonIndex)) : decoded.slice(0, colonIndex);
+                        password = conf.includes(':') ? decodeURIComponent(decoded.slice(colonIndex + 1)) : decoded.slice(colonIndex + 1);
+                        const endpoint = new URL('ss://' + srvPart);
+                        if (endpoint.searchParams.has('plugin')) throw new Error('暂不支持 SS 插件参数');
+                        server = endpoint.hostname.replace(/^\[|\]$/g, '');
+                        port = endpoint.port;
                     } else {
                         const parts = url.replace('ss://', '').split('#');
                         name = parts[1] ? decodeURIComponent(parts[1]) : name;
                         let base64Str = parts[0].replace(/-/g, '+').replace(/_/g, '/');
                         while (base64Str.length % 4) base64Str += '=';
-                        const decoded = atob(base64Str);
+                        const decoded = decodeBase64Utf8(base64Str);
                         const atIndex = decoded.lastIndexOf('@');
                         if (atIndex === -1) throw new Error('Invalid SS format');
                         const leftPart = decoded.slice(0, atIndex);
@@ -440,27 +490,282 @@
                         if (colonIndex === -1) throw new Error('Invalid SS format');
                         method = leftPart.slice(0, colonIndex);
                         password = leftPart.slice(colonIndex + 1);
-                        [server, port] = rightPart.split(':');
+                        const endpoint = new URL('ss://' + rightPart);
+                        if (endpoint.searchParams.has('plugin')) throw new Error('暂不支持 SS 插件参数');
+                        server = endpoint.hostname.replace(/^\[|\]$/g, '');
+                        port = endpoint.port;
                     }
                     
                     return { 
                         name: getUniqueName(name), 
                         type: 'ss', 
                         server, 
-                        port: parseInt(port), 
+                        port: Number(port), 
                         cipher: method, 
                         password 
                     };
                 }
             } catch (e) { 
-                console.warn(`第 ${lineNum} 行解析失败:`, e.message);
-                return { error: true, line: lineNum, message: e.message };
+                // Parser exceptions can contain the original link and its credentials.
+                return { error: true, line: lineNum, message: `第 ${lineNum} 行链接格式无效或参数不受支持` };
             }
             return null;
         }
 
+        // In-memory overrides: absent = template default; empty string = no dialer.
+        const dialerOverrides = new Map();
+        let relayEnabled = false;
+
+        function setRelayEnabled(enabled) {
+            relayEnabled = Boolean(enabled);
+            document.getElementById('chainPanel').hidden = !relayEnabled;
+            document.getElementById('chainSettingsBtn').textContent = relayEnabled ? '调整中转节点 ↓' : '设置中转节点 ↓';
+            const { nodes, errors } = readInputNodes();
+            renderChainEditor(nodes, errors);
+            invalidateOutput(relayEnabled ? '中转已开启，请确认成员并重新生成' : '中转已关闭，可直接生成配置');
+        }
+
+        function openChainEditor() {
+            setRelayEnabled(true);
+            document.getElementById('chainPanel').scrollIntoView({ block: 'nearest' });
+        }
+
+        function serializeGroups(groups) {
+            return groups.map(group => {
+                const value = { ...group };
+                if (value.type === 'url-test') {
+                    if (targetKernel === 'mihomo') value.url ||= 'https://www.gstatic.com/generate_204';
+                    else delete value.url;
+                }
+                let text = `  - name: ${escapeYaml(value.name)}`;
+                for (const [key, item] of Object.entries(value)) {
+                    if (key === 'name') continue;
+                    if (key === 'proxies') text += '\n    proxies:\n' + item.map(name => `      - ${escapeYaml(name)}`).join('\n');
+                    else text += `\n    ${key}: ${JSON.stringify(item)}`;
+                }
+                return text;
+            }).join('\n');
+        }
+
+        const routeMemberOverrides = new Map();
+        let chainEditorNodes = [];
+        const routeGroups = CONVERTER_POLICY.groups.filter(g => / Route$/.test(g.name));
+
+        function routeAccepts(groupName, nodeName) {
+            if (groupName === '🇭🇰 HK Route') return /HK/i.test(nodeName);
+            if (groupName === '🇯🇵 JP Route') return /JP/i.test(nodeName);
+            return false;
+        }
+
+        function routeMembers(group, nodes = chainEditorNodes) {
+            if (routeMemberOverrides.has(group.name)) return [...routeMemberOverrides.get(group.name)];
+            const names = new Set(nodes.map(n => n.name));
+            return group.proxies.filter(name => names.has(name) && routeAccepts(group.name, name));
+        }
+
+        function defaultDialer(name, nodes = chainEditorNodes) {
+            // A relay member must not inherit a regional route that points back to itself.
+            if (routeGroups.some(g => routeMembers(g, nodes).includes(name))) return '';
+            if (/HK/i.test(name)) return '🇭🇰 HK Route';
+            if (/JP/i.test(name)) return '🇯🇵 JP Route';
+            return Object.hasOwn(CONVERTER_POLICY.dialerProxies, name)
+                ? CONVERTER_POLICY.dialerProxies[name] : '';
+        }
+
+        function selectedDialer(name, nodes = chainEditorNodes) {
+            return dialerOverrides.has(name) ? dialerOverrides.get(name) : defaultDialer(name, nodes);
+        }
+
+        function renderRouteGroups(nodes, errors) {
+            const container = document.getElementById('routeGroupRows');
+            container.replaceChildren();
+            for (const group of routeGroups) {
+                const fieldset = document.createElement('fieldset');
+                fieldset.className = 'route-group';
+                const legend = document.createElement('legend');
+                legend.textContent = group.name;
+                fieldset.appendChild(legend);
+                const members = routeMembers(group, nodes);
+                const summary = document.createElement('p');
+                summary.textContent = members.length ? `候选顺序：${members.join('、')}` : '尚未选择成员；生成前至少勾选一个。';
+                fieldset.appendChild(summary);
+                const options = document.createElement('div');
+                options.className = 'route-options';
+                const available = new Set(nodes.map(n => n.name));
+                const candidates = [...new Set([...available].filter(name => routeAccepts(group.name, name))
+                    .concat(members.filter(name => !available.has(name) || !routeAccepts(group.name, name))))];
+                for (const name of candidates) {
+                    const label = document.createElement('label');
+                    label.className = 'route-option';
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.disabled = !relayEnabled;
+                    checkbox.checked = members.includes(name);
+                    checkbox.value = name;
+                    checkbox.addEventListener('change', () => {
+                        const selected = routeMembers(group, nodes);
+                        routeMemberOverrides.set(group.name, checkbox.checked
+                            ? [...new Set([...selected, name])] : selected.filter(n => n !== name));
+                        invalidateOutput('中转组成员已修改，请重新生成配置');
+                        renderChainEditor(nodes, errors);
+                    });
+                    const text = document.createElement('span');
+                    text.textContent = !routeAccepts(group.name, name) ? `${name}（地区不符，请取消勾选）`
+                        : available.has(name) ? name : `${name}（已从输入移除，请取消勾选或补回）`;
+                    label.appendChild(checkbox);
+                    label.appendChild(text);
+                    options.appendChild(label);
+                }
+                fieldset.appendChild(options);
+                container.appendChild(fieldset);
+            }
+        }
+
+        function invalidateOutput(message = '中转设置已修改，请重新生成配置') {
+            document.getElementById('outputArea').textContent = '等待重新生成配置';
+            document.getElementById('statusBar').textContent = message;
+        }
+
+        function readInputNodes() {
+            nodeNames.clear();
+            const nodes = [], errors = [];
+            document.getElementById('inputArea').value.split(/\r?\n/).forEach((line, index) => {
+                const result = parseNode(line, index + 1);
+                if (result?.error) errors.push(result);
+                else if (result) {
+                    if (typeof result.server !== 'string' || !result.server || /\s/.test(result.server)
+                        || !Number.isInteger(result.port) || result.port < 1 || result.port > 65535
+                        || typeof result.name !== 'string'
+                        || (result.network && !['tcp', 'ws'].includes(result.network))) {
+                        errors.push({ error: true, line: index + 1, message: `第 ${index + 1} 行地址、端口或传输类型无效；当前支持 TCP / WebSocket` });
+                    } else nodes.push(result);
+                }
+            });
+            return { nodes, errors };
+        }
+
+        function renderChainEditor(nodes, errors = []) {
+            chainEditorNodes = nodes;
+            renderRouteGroups(nodes, errors);
+            const names = new Set(nodes.map(n => n.name));
+            for (const name of dialerOverrides.keys()) {
+                if (!names.has(name)) dialerOverrides.delete(name);
+            }
+            const rows = document.getElementById('chainRows');
+            rows.replaceChildren();
+            nodes.forEach((node, index) => {
+                const row = document.createElement('div');
+                row.className = 'chain-row';
+                const label = document.createElement('label');
+                label.htmlFor = `chainSelect${index}`;
+                label.textContent = node.name;
+                const note = document.createElement('small');
+                note.textContent = routeGroups.some(g => routeMembers(g, nodes).includes(node.name))
+                    ? '已选为中转组成员 · 默认直接连接服务器，手动中转仍需避免循环'
+                    : '落地节点 · 目标网站看到此节点的出口';
+                label.appendChild(note);
+                const select = document.createElement('select');
+                select.id = `chainSelect${index}`;
+                select.className = 'chain-select';
+                select.disabled = !relayEnabled;
+                function option(value, text, disabled = false) {
+                    const item = document.createElement('option');
+                    item.value = value;
+                    item.textContent = text;
+                    item.disabled = disabled;
+                    select.appendChild(item);
+                }
+                option('template', `自动默认：${defaultDialer(node.name) || '不使用中转'}`);
+                option('none', '不使用中转（直接连接此节点服务器）');
+                const targets = [...CONVERTER_POLICY.groups.filter(g => / Route$/.test(g.name)).map(g => g.name),
+                    ...nodes.filter(n => n.name !== node.name).map(n => n.name)];
+                for (const name of targets) option('target:' + name, name);
+                const selected = selectedDialer(node.name);
+                if (selected && !targets.includes(selected)) {
+                    option('target:' + selected, `不可用：${selected}（请补齐节点或重新选择）`, true);
+                }
+                select.value = !dialerOverrides.has(node.name) ? 'template'
+                    : selected ? 'target:' + selected : 'none';
+                select.addEventListener('change', () => {
+                    if (select.value === 'template') dialerOverrides.delete(node.name);
+                    else dialerOverrides.set(node.name, select.value === 'none' ? '' : select.value.slice(7));
+                    invalidateOutput();
+                    document.getElementById('chainSummary').textContent = '中转设置已修改。点击生成配置后将检查完整链路。';
+                });
+                row.appendChild(label);
+                row.appendChild(select);
+                rows.appendChild(row);
+            });
+            document.getElementById('chainSummary').textContent = !relayEnabled
+                ? '中转未启用：可直接生成配置，不写入 dialer-proxy，也不要求中转组成员。' : nodes.length
+                ? `已读取 ${nodes.length} 个节点，可逐个选择中转。${errors.length ? `另有 ${errors.length} 行解析失败。` : ''}修改后请重新生成配置。`
+                : '未读取到可用节点，请先粘贴支持的节点链接。';
+        }
+
+        function refreshChainEditor(scroll = false) {
+            const { nodes, errors } = readInputNodes();
+            renderChainEditor(nodes, errors);
+            invalidateOutput('节点已刷新，请确认中转设置后重新生成');
+            if (scroll) document.getElementById('chainPanel').scrollIntoView({ block: 'nearest' });
+        }
+
+        function resetChainChoices() {
+            dialerOverrides.clear();
+            routeMemberOverrides.clear();
+            refreshChainEditor();
+        }
+
+        function buildRouting(nodes) {
+            const activeGroups = CONVERTER_POLICY.groups.filter(g => relayEnabled || !routeGroups.some(route => route.name === g.name));
+            const groupNames = new Set(activeGroups.map(g => g.name));
+            const names = new Set(nodes.map(n => n.name));
+            if (nodes.some(n => CONVERTER_POLICY.groups.some(g => g.name === n.name) || ['DIRECT', 'REJECT'].includes(n.name))) {
+                throw new Error('节点名称不能与策略组或 DIRECT / REJECT 重名');
+            }
+            const missing = CONVERTER_POLICY.requiredNodes.filter(name => !names.has(name));
+            if (missing.length) throw new Error(`请补齐规则指定节点：${missing.join('、')}`);
+            const known = new Set([...names, ...groupNames, 'DIRECT', 'REJECT']);
+            const groups = activeGroups.map(group => {
+                const allNodes = ['🚀 节点选择', '♻️ 自动选择'].includes(group.name);
+                const isRoute = routeGroups.some(g => g.name === group.name);
+                const candidates = isRoute ? routeMembers(group, nodes) : allNodes
+                    ? [...group.proxies.filter(name => groupNames.has(name) || ['DIRECT', 'REJECT'].includes(name)), ...names]
+                    : group.proxies.filter(name => known.has(name));
+                if (isRoute && candidates.some(name => !routeAccepts(group.name, name))) {
+                    throw new Error(`${group.name} 只能包含名称带 ${group.name === '🇭🇰 HK Route' ? 'HK' : 'JP'} 的节点，请取消不符成员`);
+                }
+                if (isRoute && candidates.some(name => !names.has(name))) {
+                    throw new Error(`${group.name} 存在已移除的成员，请取消勾选或补齐节点`);
+                }
+                if (!candidates.length) {
+                    throw new Error(`请补齐 ${group.name} 的候选节点：${group.proxies.join('、')}`);
+                }
+                return { ...group, proxies: [...new Set(candidates)] };
+            });
+            const dialers = new Map();
+            for (const node of relayEnabled ? nodes : []) {
+                const target = selectedDialer(node.name, nodes);
+                if (!target) continue;
+                if (!known.has(target)) throw new Error(`节点 ${node.name} 缺少中转出口：${target}`);
+                dialers.set(node.name, target);
+            }
+            // Check every selectable branch, including node -> dialer -> group edges.
+            const edges = new Map(groups.map(g => [g.name, g.proxies]));
+            for (const node of nodes) edges.set(node.name, dialers.has(node.name) ? [dialers.get(node.name)] : []);
+            const visited = new Set();
+            function visit(name, path) {
+                if (path.includes(name)) throw new Error(`中转链路存在循环：${[...path, name].join(' → ')}`);
+                if (visited.has(name)) return;
+                for (const child of edges.get(name) || []) visit(child, [...path, name]);
+                visited.add(name);
+            }
+            for (const name of edges.keys()) visit(name, []);
+            return { groups, dialers };
+        }
+
         let targetKernel = 'mihomo';
         function setKernel(k) {
+            if (targetKernel !== k) invalidateOutput('客户端已切换，请重新生成配置');
             targetKernel = k;
             const on = 'flex-1 text-xs font-bold py-2 rounded-lg transition-all bg-white text-blue-600 shadow';
             const off = 'flex-1 text-xs font-bold py-2 rounded-lg transition-all text-slate-500';
@@ -491,27 +796,14 @@
 
             // 模拟异步处理以显示 loading 效果
             setTimeout(() => {
-                nodeNames.clear();
-                
-                const lines = input.split(/\r?\n/);
-                const results = [];
-                const errors = [];
-                
-                lines.forEach((line, idx) => {
-                    const result = parseNode(line, idx + 1);
-                    if (result) {
-                        if (result.error) {
-                            errors.push(result);
-                        } else {
-                            results.push(result);
-                        }
-                    }
-                });
+                const { nodes: results, errors } = readInputNodes();
+                renderChainEditor(results, errors);
 
                 if (results.length === 0) {
                     const errorMsg = errors.length > 0 
                         ? `解析失败！共 ${errors.length} 个错误`
                         : "未检测到有效节点链接";
+                    invalidateOutput('没有可转换的节点，请检查输入');
                     showToast(errorMsg, 'error');
                     if (errors.length > 0) {
                         console.error('解析错误:', errors);
@@ -525,13 +817,13 @@
                     return;
                 }
 
-                // 生成 YAML
-                // 固定出口不能静默替换；区域为空也不能冒充美国节点。
-                const requiredNodes = ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo', 'JP-RFCHost'];
-                const missingRequired = requiredNodes.filter(name => !results.some(n => n.name === name));
-                if (missingRequired.length) {
-                    document.getElementById('outputArea').textContent = '等待补齐规则指定节点';
-                    showToast(`请补齐规则指定节点：${missingRequired.join('、')}`, 'error');
+                let routing;
+                try {
+                    routing = buildRouting(results);
+                } catch (error) {
+                    document.getElementById('outputArea').textContent = '等待补齐或修正链路节点';
+                    document.getElementById('statusBar').textContent = error.message;
+                    showToast(error.message, 'error');
                     isProcessing = false;
                     btn.disabled = false;
                     btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
@@ -540,31 +832,31 @@
                 }
                 const proxiesYaml = results.map(n => {
                     const safeName = escapeYaml(n.name);
-                    let s = `  - name: ${safeName}\n    type: ${n.type}\n    server: ${n.server}\n    port: ${n.port}\n    udp: true`;
+                    let s = `  - name: ${safeName}\n    type: ${n.type}\n    server: ${escapeYaml(n.server)}\n    port: ${n.port}\n    udp: true`;
                     
                     if (n.type === 'ss') {
-                        s += `\n    cipher: ${n.cipher}\n    password: ${escapeYaml(n.password)}`;
+                        s += `\n    cipher: ${escapeYaml(n.cipher)}\n    password: ${escapeYaml(n.password)}`;
                     } else if (n.type === 'vmess') {
-                        s += `\n    uuid: ${n.uuid}\n    alterId: ${n.alterId}\n    cipher: ${n.cipher || 'auto'}\n    tls: ${n.tls}`;
+                        s += `\n    uuid: ${escapeYaml(n.uuid)}\n    alterId: ${n.alterId}\n    cipher: ${escapeYaml(n.cipher || 'auto')}\n    tls: ${n.tls}`;
                         if (n.tls) {
                             s += `\n    servername: ${escapeYaml(n.servername || n.server)}`;
                         }
                         if (n.network && n.network !== 'tcp') {
-                            s += `\n    network: ${n.network}`;
+                            s += `\n    network: ${escapeYaml(n.network)}`;
                             if (n.wsOpts) {
                                 s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
                             }
                         }
                     } else if (n.type === 'vless') {
-                        s += `\n    uuid: ${n.uuid}`;
-                        s += `\n    servername: ${escapeYaml(n.servername)}`;
+                        s += `\n    uuid: ${escapeYaml(n.uuid)}`;
+                        s += `\n    ${targetKernel === 'stash' ? 'sni' : 'servername'}: ${escapeYaml(n.servername)}`;
                         s += `\n    tls: ${n.tls}`;
                         if (n.flow) {
-                            s += `\n    flow: ${n.flow}`;
+                            s += `\n    flow: ${escapeYaml(n.flow)}`;
                         }
-                        s += `\n    client-fingerprint: ${n.fingerprint || 'chrome'}`;
+                        s += `\n    client-fingerprint: ${escapeYaml(n.fingerprint || 'chrome')}`;
                         if (n.network && n.network !== 'tcp') {
-                            s += `\n    network: ${n.network}`;
+                            s += `\n    network: ${escapeYaml(n.network)}`;
                             if (n.wsOpts) {
                                 s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
                             }
@@ -580,47 +872,21 @@
                         s += `\n    tls: ${n.tls}`;
                         s += `\n    sni: ${escapeYaml(n.sni)}`;
                         if (n.network && n.network !== 'tcp') {
-                            s += `\n    network: ${n.network}`;
+                            s += `\n    network: ${escapeYaml(n.network)}`;
                             if (n.wsOpts) {
                                 s += `\n    ws-opts:\n      path: ${escapeYaml(n.wsOpts.path)}\n      headers:\n        Host: ${escapeYaml(n.wsOpts.headers.Host)}`;
                             }
                         }
                     }
+                    if (routing.dialers.has(n.name)) {
+                        s += `\n    dialer-proxy: ${escapeYaml(routing.dialers.get(n.name))}`;
+                    }
                     return s;
                 }).join('\n');
 
-                const nodeListYaml = results.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
-
-                // 按地区分类节点（根据节点名称前缀识别）
-                const jpNodes = results.filter(n => /^JP|^JPMAX/i.test(n.name));
-                const hkNodes = results.filter(n => /^HK|^MO|^TW/i.test(n.name));
-                const usNodes = results.filter(n => /^LA|^SJC|^DLS/i.test(n.name));
-
-                // 地区分组仅包含用户输入的节点。
-                if (!hkNodes.length) {
-                    document.getElementById('outputArea').textContent = '等待补齐地区节点';
-                    showToast('请提供至少一个 HK / MO / TW 前缀的节点以填充港台地区组', 'error');
-                    isProcessing = false;
-                    btn.disabled = false;
-                    btnIcon.className = 'fas fa-magic group-hover:rotate-12 transition-transform';
-                    btnText.textContent = '生成完整配置';
-                    return;
-                }
-                const jpNodeListYaml = jpNodes.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
-                const hkNodeListYaml = hkNodes.map(n => `      - ${escapeYaml(n.name)}`).join('\n');
-                const usNodeListYaml = usNodes
-                    .map(n => `      - ${escapeYaml(n.name)}`).join('\n');
-                // TikTok 组：日本+美国节点罗列（TikTok 未在港澳运营，不含 HK/MO）
-                const ttNodeListYaml = [...jpNodes, ...usNodes]
-                    .map(n => `      - ${escapeYaml(n.name)}`).join('\n');
-
-                const final = (targetKernel === 'stash' ? STASH_TEMPLATE : CLASH_TEMPLATE)
-                    .replace('{{proxies}}', proxiesYaml)
-                    .replace(/{{nodeList}}/g, nodeListYaml)
-                    .replace('{{jpNodeList}}', jpNodeListYaml)
-                    .replace('{{hkNodeList}}', hkNodeListYaml)
-                    .replace('{{usNodeList}}', usNodeListYaml)
-                    .replace('{{ttNodeList}}', ttNodeListYaml);
+                let final = (targetKernel === 'stash' ? STASH_TEMPLATE : CLASH_TEMPLATE)
+                    .replace('{{proxies}}', () => proxiesYaml);
+                final = final.replace('{{proxyGroups}}', () => serializeGroups(routing.groups));
 
                 const outputEl = document.getElementById('outputArea');
                 outputEl.innerHTML = highlightYaml(final);
@@ -640,13 +906,6 @@
                     showToast(`生成成功，但有 ${errors.length} 个节点解析失败`, 'warning');
                 } else {
                     showToast(`成功生成 ${results.length} 个节点配置`, 'success');
-                }
-
-                // 规则中直接引用了这些节点名，缺失会导致 mihomo 启动失败
-                const requiredByRules = ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo', 'JP-RFCHost'];
-                const missingNodes = requiredByRules.filter(n => !results.some(r => r.name === n));
-                if (missingNodes.length > 0) {
-                    showToast(`规则引用的节点缺失: ${missingNodes.join('、')}`, 'warning');
                 }
 
                 // 恢复按钮
@@ -692,6 +951,10 @@
             const inputArea = document.getElementById('inputArea');
             if(inputArea.value && confirm('确定要清空所有输入吗？')) {
                 inputArea.value = '';
+                dialerOverrides.clear();
+                routeMemberOverrides.clear();
+                renderChainEditor([]);
+                invalidateOutput('输入已清空');
                 document.getElementById('nodeCount').innerText = '0 个节点';
                 showToast('已清空', 'info');
             }
@@ -717,6 +980,7 @@
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     textarea.value = event.target.result;
+                    refreshChainEditor();
                     const lines = event.target.result.split(/\r?\n/).filter(l => {
                         const t = l.trim();
                         return t.startsWith('vmess://') || t.startsWith('vless://') || t.startsWith('trojan://') || t.startsWith('ss://');
@@ -757,6 +1021,10 @@
         
         // 输入时自动统计
         textarea.addEventListener('input', () => {
+            invalidateOutput('输入已修改，请刷新节点并重新生成');
+            document.getElementById('chainRows').replaceChildren();
+            document.getElementById('routeGroupRows').replaceChildren();
+            document.getElementById('chainSummary').textContent = '输入已变化，请点击“读取 / 刷新节点”更新中转选项。';
             const lines = textarea.value.split(/\r?\n/).filter(l => {
                 const trimmed = l.trim();
                 return trimmed.startsWith('vmess://') || trimmed.startsWith('vless://') || trimmed.startsWith('trojan://') || trimmed.startsWith('ss://');

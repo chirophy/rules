@@ -1,56 +1,42 @@
 {
-  "checked_at": "2026-09-20T06:04:47.764274+00:00",
+  "checked_at": "2026-10-23T08:31:50.768191+00:00",
   "method": "Exact payload string equality only; suffix/wildcard/CIDR semantic coverage is not inferred. Remote snapshots do not prove permanent redundancy.",
-  "local_rules": 31,
-  "local_unique_rules": 31,
+  "local_rules": 30,
+  "local_unique_rules": 30,
   "providers": {
     "BanAD": {
-      "entries": 588,
-      "unique": 588,
+      "entries": 374,
+      "unique": 374,
       "duplicates": 0,
-      "sha256": "27a5f6d018d428409d8da5d9f390a46298d505ae4941bb8172f052055abe7262",
+      "sha256": "8d575f783bb22b8946b3ee68c5ed07aca0371812f41ef87848ab20565d9e4a58",
       "behavior": "classical"
     },
     "BanProgramAD": {
-      "entries": 1016,
-      "unique": 1010,
-      "duplicates": 6,
-      "sha256": "35cefd7a4c01d2efa9b4c7928e21caa348f78a3f60b46d7d850f1e3334a5a766",
-      "behavior": "classical"
-    },
-    "reject": {
-      "entries": 190037,
-      "unique": 190037,
+      "entries": 20,
+      "unique": 20,
       "duplicates": 0,
-      "sha256": "18de31258fdeea2d2d46e84cc3dcc19c9ad635b14461cb9435d65edf8652e2bd",
-      "behavior": "domain"
+      "sha256": "565d96f7e2dd25439c2132ec3a5cc2159312db809e756db959752f114ce1d0ae",
+      "behavior": "classical"
     },
     "private": {
-      "entries": 130,
-      "unique": 130,
+      "entries": 132,
+      "unique": 132,
       "duplicates": 0,
-      "sha256": "3a04b128200ef8097d73b1496cbb23d24bc1e05d42fffb09f07c51699efb00b2",
+      "sha256": "49972ad557345dd1abe94a62892f06cbc5b4cef12bf8d7ac5beca454b5de9088",
       "behavior": "domain"
     },
-    "GoogleCN": {
-      "entries": 29,
-      "unique": 29,
-      "duplicates": 0,
-      "sha256": "00ffcc16d0eb1898cba4f9c2cc2ce76a8f70bef7a03aea436dad79982b77c8ca",
-      "behavior": "classical"
-    },
     "SteamCN": {
-      "entries": 16,
-      "unique": 16,
+      "entries": 17,
+      "unique": 17,
       "duplicates": 0,
-      "sha256": "bf135f78199fbadcb663a047d70eb59ec81bead3a04cfe050036e2921c2ea607",
+      "sha256": "9001a292467843777e7b97b7a78224da8a259f5e6fcb5d36e4413c28296875e4",
       "behavior": "classical"
     },
     "Microsoft": {
-      "entries": 79,
-      "unique": 79,
+      "entries": 670,
+      "unique": 670,
       "duplicates": 0,
-      "sha256": "b502566c1b86d5512111bd4a2bb5d808eda4e36aad3009a3ca05da354c09449e",
+      "sha256": "a289a1d52394e92ceee26a5c83953cd292609717d39fb2970d189dc7877b2a4d",
       "behavior": "classical"
     },
     "icloud": {
@@ -68,10 +54,10 @@
       "behavior": "domain"
     },
     "ProxyMedia": {
-      "entries": 372,
-      "unique": 357,
-      "duplicates": 15,
-      "sha256": "fe886c6f537c0214446018f3f64291db8d500c58877d180d2a21a78c19c499e1",
+      "entries": 953,
+      "unique": 953,
+      "duplicates": 0,
+      "sha256": "c284b0870abfe3b3fbb9e601904606ced0c4948c5d9e4febd06df526de708bd7",
       "behavior": "classical"
     },
     "telegramcidr": {
@@ -89,17 +75,17 @@
       "behavior": "domain"
     },
     "proxy": {
-      "entries": 27092,
-      "unique": 27092,
+      "entries": 27286,
+      "unique": 27286,
       "duplicates": 0,
-      "sha256": "7010f7be744dfac04bbdc292d4a6d7d1050d4ca79e6bad144b46966cf8b45b40",
+      "sha256": "0e003ba3ef806fdca059a51717e6dabdad80d1d0c6dbf67edb0a30865435142a",
       "behavior": "domain"
     },
     "gfw": {
-      "entries": 4384,
-      "unique": 4384,
+      "entries": 4432,
+      "unique": 4432,
       "duplicates": 0,
-      "sha256": "5133ac5d6735e2040e9477e0c94640a9ac1bc2f40855c907c31648d59866d563",
+      "sha256": "5dd8fbe9d9a9337ba6e4428709429dc2f857b9ed182b4a5bbc86c394bf9f8e48",
       "behavior": "domain"
     },
     "tld-not-cn": {
@@ -110,10 +96,10 @@
       "behavior": "domain"
     },
     "direct": {
-      "entries": 111160,
-      "unique": 111160,
+      "entries": 110518,
+      "unique": 110518,
       "duplicates": 0,
-      "sha256": "206654921e5364e33eacd864aa3f2de9e6a66e2d99e2b29026d7919856a27fa7",
+      "sha256": "3a49ab7a5daa5a92895c65bd5f7c71b61f4b9ea8c548bf73225c207c3bf06ceb",
       "behavior": "domain"
     },
     "lancidr": {
@@ -124,10 +110,10 @@
       "behavior": "ipcidr"
     },
     "cncidr": {
-      "entries": 9741,
-      "unique": 9741,
+      "entries": 10013,
+      "unique": 10013,
       "duplicates": 0,
-      "sha256": "65669404ff308b1190bdf7b3f97302948d817582b73020750a15db00b529a7bb",
+      "sha256": "b7b603728c2e4334500e62e90e9a785d456234e56f87d9dd065f43d6c70bdaac",
       "behavior": "ipcidr"
     },
     "applications": {
@@ -138,10 +124,10 @@
       "behavior": "classical"
     },
     "TikTok": {
-      "entries": 32,
-      "unique": 32,
+      "entries": 35,
+      "unique": 35,
       "duplicates": 0,
-      "sha256": "7146b733ee239b6818d496aec1640cf1e962b39cda823388ce98d83761a6c885",
+      "sha256": "ddf8e51eadb481849cd8146e7f1b55143c5bac1d3399f706445d5996c613085f",
       "behavior": "classical"
     },
     "ai": {
@@ -158,14 +144,14 @@
       "b": "proxy",
       "exact_intersection": 45,
       "a_only": 67,
-      "b_only": 27047
+      "b_only": 27241
     },
     {
       "a": "gfw",
       "b": "proxy",
-      "exact_intersection": 4254,
-      "a_only": 130,
-      "b_only": 22838
+      "exact_intersection": 4301,
+      "a_only": 131,
+      "b_only": 22985
     },
     {
       "a": "icloud",
@@ -177,16 +163,16 @@
     {
       "a": "BanAD",
       "b": "BanProgramAD",
-      "exact_intersection": 2,
-      "a_only": 586,
-      "b_only": 1008
+      "exact_intersection": 0,
+      "a_only": 374,
+      "b_only": 20
     },
     {
       "a": "private",
       "b": "direct",
       "exact_intersection": 4,
-      "a_only": 126,
-      "b_only": 111156
+      "a_only": 128,
+      "b_only": 110514
     }
   ]
 }

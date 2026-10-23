@@ -1,8 +1,6 @@
-"""Generate platform templates and synchronize the existing browser converter.
-
-Requires PyYAML: python -m pip install --target .tools PyYAML
-"""
+"""Build public templates; optionally import a local configuration without its nodes."""
 from pathlib import Path
+import argparse
 import copy
 import json
 import re
@@ -13,121 +11,108 @@ sys.path.insert(0, str(ROOT / '.tools'))
 import yaml
 
 
-def build(platform):
-    source = yaml.safe_load((ROOT / 'rules-baseline.yaml').read_text(encoding='utf-8-sig'))
+class Dumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
+
+    def increase_indent(self, flow=False, indentless=False):
+        return super().increase_indent(flow, False)
+
+
+def dump(cfg):
+    return yaml.dump(cfg, Dumper=Dumper, allow_unicode=True, sort_keys=False, width=160)
+
+
+def import_source(path):
+    source = yaml.safe_load(path.read_text(encoding='utf-8-sig'))
+    # Only public settings. Never copy node connection parameters or credentials.
+    keys = ('mixed-port', 'allow-lan', 'mode', 'unified-delay', 'tcp-concurrent',
+            'log-level', 'ipv6', 'external-controller', 'dns', 'proxy-groups',
+            'rule-providers', 'rules')
+    cfg = {key: copy.deepcopy(source[key]) for key in keys}
+    cfg['proxies'] = []
+    cfg['x-converter'] = {'dialer-proxies': {
+        n['name']: n['dialer-proxy'] for n in source['proxies'] if n.get('dialer-proxy')
+    }}
+    (ROOT / 'rules-baseline.yaml').write_text(
+        '# Public routing and chain blueprint; contains no node connection parameters.\n'
+        + dump(cfg), encoding='utf-8')
+
+
+def policy(source):
+    names = {g['name'] for g in source['proxy-groups']} | {'DIRECT', 'REJECT'}
+    required = []
+    for rule in source['rules']:
+        parts = rule.split(',')
+        target = parts[-2] if parts[-1] == 'no-resolve' else parts[-1]
+        if target not in names and target not in required:
+            required.append(target)
+    ai = next(g for g in source['proxy-groups'] if g['name'] == '🤖 AI')
+    required = list(dict.fromkeys(ai['proxies'] + required))
+    return {'groups': source['proxy-groups'], 'requiredNodes': required,
+            'dialerProxies': source['x-converter']['dialer-proxies']}
+
+
+def build(source, platform):
     cfg = copy.deepcopy(source)
-    cfg['dns'].pop('follow-rule')
-    # +.msftconnecttest.com covers the old *.msftconnecttest.com entry.
-    cfg['dns']['fake-ip-filter'].remove('*.msftconnecttest.com')
+    cfg.pop('x-converter')
     cfg['proxies'] = '__PROXIES__'
-    groups = cfg['proxy-groups']
-    groups.insert(5, {'name': '🤖 AI', 'type': 'select',
-                      'proxies': ['LA-VMRack-三网', 'LA-DMIT', 'LA-Zgo']})
-    cfg['rules'] = ['RULE-SET,ai,🤖 AI' if rule == 'RULE-SET,ai,LA-VMRack-三网' else rule
-                    for rule in cfg['rules']]
-    # Keep defaults and access to individual nodes via the main selection group.
-    for g in groups:
-        if g['name'] == '🚀 节点选择':
-            g['proxies'] = g['proxies'][:5] + ['__NODES__']
-        elif g['name'] == '♻️ 自动选择':
-            g['proxies'] = ['__NODES__']
-        elif g['name'] == '🇯🇵 日本-最优':
-            g['proxies'] = ['__JP__']
-        elif g['name'] == '🇭🇰 港澳台-最优':
-            g['proxies'] = ['__HK__']
-        elif g['name'] == '🇺🇸 美国-最优':
-            g['proxies'] = ['__US__']
-        elif g['name'] in ('🌍 国外媒体', '📲 电报信息'):
-            g['proxies'] = g['proxies'][:3] + ['__NODES__']
-        elif g['name'] == '🎵 TikTok':
-            g['proxies'] = g['proxies'][:3] + ['__TT__']
-    # Deliberate coverage tradeoff, not a claim that BanAD fully replaces reject.
-    del cfg['rule-providers']['reject']
-    cfg['rules'].remove('RULE-SET,reject,🆎 AdBlock')
-    groups[:] = [g for g in groups if g['name'] != '🆎 AdBlock']
-
-    if platform == 'stash':
-        cfg = {k: cfg[k] for k in ('mixed-port', 'allow-lan', 'mode', 'log-level', 'ipv6', 'external-controller', 'unified-delay', 'tcp-concurrent', 'dns', 'proxies', 'proxy-groups', 'rule-providers', 'rules')}
-        cfg['mixed-port'] = 7890
-        cfg['allow-lan'] = True
-        cfg['external-controller'] = '0.0.0.0:9090'
-        cfg['unified-delay'] = True
-        cfg['tcp-concurrent'] = True
-        old = cfg['dns']
-        # Keep platform-specific DNS fields separate.
-        cfg['dns'] = {
-            'follow-rule': True,
-            'default-nameserver': ['223.5.5.5', '119.29.29.29'],
-            'nameserver': ['https://dns.alidns.com/dns-query', 'https://doh.pub/dns-query'],
-            'fake-ip-filter': old['fake-ip-filter'],
-        }
-        for g in groups:
-            if g['type'] == 'url-test':
-                g.pop('url', None)
-                g.pop('tolerance', None)
-        for p in cfg['rule-providers'].values():
-            p['type'] = 'http'
-            p.setdefault('format', 'yaml')
-            p.pop('path', None)
-    cfg['ipv6'] = True
+    cfg['proxy-groups'] = '__GROUPS__'
     dns = cfg['dns']
-    dns['ipv6'] = True
-    dns['follow-rule' if platform == 'stash' else 'respect-rules'] = True
-    dns['default-nameserver'] = ['223.5.5.5', '119.29.29.29']
-    dns['nameserver'] = ['https://dns.alidns.com/dns-query', 'https://doh.pub/dns-query']
-    dns['proxy-server-nameserver'] = list(dns['nameserver'])
-    dns['nameserver-policy'] = {'geosite:geolocation-!cn': [
-        'https://1.1.1.1/dns-query#🚀 节点选择',
-        'https://8.8.8.8/dns-query#🚀 节点选择',
-    ]}
-    dns.pop('fallback', None)
-    dns.pop('fallback-filter', None)
-    server_keys = ('default-nameserver', 'nameserver', 'proxy-server-nameserver', 'nameserver-policy')
     if platform == 'mihomo':
-        dns['direct-nameserver'] = list(dns['nameserver'])
-        dns['direct-nameserver-follow-policy'] = False
-        server_keys += ('direct-nameserver', 'direct-nameserver-follow-policy')
-    cfg['dns'] = {k: v for k, v in dns.items() if k not in (*server_keys, 'fake-ip-filter')}
-    cfg['dns'].update((k, dns[k]) for k in server_keys)
-    cfg['dns']['fake-ip-filter'] = dns['fake-ip-filter']
-    class Dumper(yaml.SafeDumper):
-        def ignore_aliases(self, data):
-            # Expand every group so exported configurations can be inspected directly.
-            return True
-
-        def increase_indent(self, flow=False, indentless=False):
-            return super().increase_indent(flow, False)
-    text = yaml.dump(cfg, Dumper=Dumper, allow_unicode=True, sort_keys=False, width=160)
+        dns.pop('follow-rule', None)
+        dns.update({'enable': True, 'respect-rules': True, 'enhanced-mode': 'fake-ip'})
+    else:
+        for key in ('enable', 'respect-rules', 'enhanced-mode'):
+            dns.pop(key, None)
+        dns['follow-rule'] = True
+    text = dump(cfg).replace('proxies: __PROXIES__', 'proxies:\n{{proxies}}')
+    text = text.replace('proxy-groups: __GROUPS__', 'proxy-groups:\n{{proxyGroups}}')
     for address in dns['nameserver-policy']['geosite:geolocation-!cn']:
         text = text.replace('- ' + address, '- ' + json.dumps(address, ensure_ascii=False))
-    text = text.replace('proxies: __PROXIES__', 'proxies:\n{{proxies}}')
-    for token, name in [('__NODES__', 'nodeList'), ('__JP__', 'jpNodeList'), ('__HK__', 'hkNodeList'), ('__US__', 'usNodeList'), ('__TT__', 'ttNodeList')]:
-        text = re.sub(r'^\s+- ' + token + r'$', '{{' + name + '}}', text, flags=re.M)
-    header = '# ' + platform + ' 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。\n'
-    header += '# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。\n'
+    header = f'# {platform} 专用占位符模板；请通过 index.html 填入节点。\n'
+    header += '# 分流、默认选择与中转关系来自 rules-baseline.yaml；不包含固定节点。\n'
     if platform == 'stash':
-        header += '# 适用 iOS/tvOS 3.6+、macOS 4.3+；iOS/tvOS 不支持进程规则。\n'
-        header += '# 共享代理：Stash iOS/Mac 默认在 7890 提供 HTTP/SOCKS；请在客户端开启「允许局域网连接」。\n'
-        header += '# 按用户要求显式输出 mixed-port: 7890 / allow-lan: true；客户端实际监听和共享开关仍需确认。\n'
-        header += '# iOS 减负版：DNS 跟随规则、按 geosite 分流；移除 reject 及其独立广告组，广告覆盖减少。\n'
-    text = header + text
-    return text
+        header += '# 目标 iOS/tvOS 3.6+、macOS 4.3+；进程规则与 DNS 策略后缀的边界见 README。\n'
+    return header + text
+
+
+def js_json(value):
+    return json.dumps(value, ensure_ascii=False).replace('<', '\\u003c')
 
 
 def main():
-    (ROOT / 'templates').mkdir(exist_ok=True)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, help='Local source; import public routing settings and chain names only')
+    parser.add_argument('--rules-source', type=Path, help='YAML/TXT containing rule-providers and rules only; leave DNS, nodes and groups unchanged')
+    args = parser.parse_args()
+    if args.source:
+        import_source(args.source)
+    source = yaml.safe_load((ROOT / 'rules-baseline.yaml').read_text(encoding='utf-8-sig'))
+    if args.rules_source:
+        updates = yaml.safe_load(args.rules_source.read_text(encoding='utf-8-sig'))
+        assert isinstance(updates, dict) and set(updates) == {'rule-providers', 'rules'}, 'Rules source must contain only rule-providers and rules'
+        assert isinstance(updates['rule-providers'], dict) and isinstance(updates['rules'], list)
+        source.update(copy.deepcopy(updates))
+        (ROOT / 'rules-baseline.yaml').write_text(
+            '# Public routing and chain blueprint; contains no node connection parameters.\n' + dump(source), encoding='utf-8')
     html_path = ROOT / 'index.html'
     html = html_path.read_text(encoding='utf-8')
-    for platform, variable in [('mihomo', 'CLASH_TEMPLATE'), ('stash', 'STASH_TEMPLATE')]:
-        text = build(platform)
-        (ROOT / 'templates' / f'{platform}.yaml').write_text(text, encoding='utf-8')
-        pattern = r'const ' + variable + r' = (?:`[\s\S]*?`|"(?:\\.|[^"\\])*");'
-        html, n = re.subn(pattern, lambda _: 'const ' + variable + ' = ' + json.dumps(text, ensure_ascii=False) + ';', html, count=1)
-        assert n == 1, variable
-    html = html.replace('Template: rules-baseline.yaml', 'Templates: mihomo.yaml / stash.yaml')
-    html = html.replace('Stash / Clash Premium', 'Stash')
+    for platform, variable in [('mihomo', 'CLASH_TEMPLATE'), ('stash', 'STASH_TEMPLATE'),
+                               ('policy', 'CONVERTER_POLICY')]:
+        value = policy(source) if platform == 'policy' else build(source, platform)
+        if platform != 'policy':
+            (ROOT / 'templates' / f'{platform}.yaml').write_text(value, encoding='utf-8')
+        declaration = 'const ' + variable + ' = ' + js_json(value) + ';'
+        pattern = r'const ' + variable + r' = (?:`[\s\S]*?`|"(?:\\.|[^"\\])*"|\{[^\n]*\});'
+        if variable == 'CONVERTER_POLICY' and not re.search(pattern, html):
+            html = html.replace('        const nodeNames = new Set();',
+                                '        ' + declaration + '\n        const nodeNames = new Set();')
+        else:
+            html, count = re.subn(pattern, lambda _: declaration, html, count=1)
+            assert count == 1, variable
     html_path.write_text(html, encoding='utf-8')
-    print('Generated both templates; index.html synchronized.')
+    print('Generated both templates and public chain policy; index.html synchronized.')
 
 
 if __name__ == '__main__':

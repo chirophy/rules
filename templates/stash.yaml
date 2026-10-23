@@ -1,17 +1,14 @@
-# stash 专用模板；请通过 HTML 转换器填入节点，不要直接导入占位符。
-# 分流顺序与固定出口以 rules-baseline.yaml 为准；说明及官方来源见 README.md。
-# 适用 iOS/tvOS 3.6+、macOS 4.3+；iOS/tvOS 不支持进程规则。
-# 共享代理：Stash iOS/Mac 默认在 7890 提供 HTTP/SOCKS；请在客户端开启「允许局域网连接」。
-# 按用户要求显式输出 mixed-port: 7890 / allow-lan: true；客户端实际监听和共享开关仍需确认。
-# iOS 减负版：DNS 跟随规则、按 geosite 分流；移除 reject 及其独立广告组，广告覆盖减少。
+# stash 专用占位符模板；请通过 index.html 填入节点。
+# 分流、默认选择与中转关系来自 rules-baseline.yaml；不包含固定节点。
+# 目标 iOS/tvOS 3.6+、macOS 4.3+；进程规则与 DNS 策略后缀的边界见 README。
 mixed-port: 7890
 allow-lan: true
 mode: rule
+unified-delay: true
+tcp-concurrent: true
 log-level: info
 ipv6: true
 external-controller: 0.0.0.0:9090
-unified-delay: true
-tcp-concurrent: true
 dns:
   follow-rule: true
   ipv6: true
@@ -51,136 +48,20 @@ dns:
     - xbox.*.*.microsoft.com
     - '*.*.xboxlive.com'
     - '*.msftncsi.com'
-    - +.bilibili.com
-    - +.bilibili.cn
-    - +.hdslb.com
-    - +.bilivideo.com
-    - +.bilivideo.cn
-    - +.acgvideo.com
-    - +.biliapi.net
-    - +.biliapi.com
-    - +.biligame.com
-proxies:
-{{proxies}}
 proxy-groups:
-  - name: 🚀 节点选择
-    type: select
-    proxies:
-      - ♻️ 自动选择
-      - DIRECT
-      - 🇯🇵 日本-最优
-      - 🇭🇰 港澳台-最优
-      - 🇺🇸 美国-最优
-{{nodeList}}
-  - name: ♻️ 自动选择
-    type: url-test
-    proxies:
-{{nodeList}}
-    interval: 300
-    lazy: true
-  - name: 🇯🇵 日本-最优
-    type: url-test
-    proxies:
-{{jpNodeList}}
-    interval: 300
-    lazy: true
-  - name: 🇭🇰 港澳台-最优
-    type: url-test
-    proxies:
-{{hkNodeList}}
-    interval: 300
-    lazy: true
-  - name: 🇺🇸 美国-最优
-    type: url-test
-    proxies:
-{{usNodeList}}
-    interval: 300
-    lazy: true
-  - name: 🤖 AI
-    type: select
-    proxies:
-      - LA-VMRack-三网
-      - LA-DMIT
-      - LA-Zgo
-  - name: 🌍 国外媒体
-    type: select
-    proxies:
-      - 🚀 节点选择
-      - ♻️ 自动选择
-      - 🎯 全球直连
-{{nodeList}}
-  - name: 📲 电报信息
-    type: select
-    proxies:
-      - 🚀 节点选择
-      - ♻️ 自动选择
-      - 🎯 全球直连
-{{nodeList}}
-  - name: Ⓜ️ 微软服务
-    type: select
-    proxies:
-      - 🎯 全球直连
-      - 🚀 节点选择
-      - 🇯🇵 日本-最优
-      - 🇭🇰 港澳台-最优
-      - 🇺🇸 美国-最优
-  - name: 🍎 苹果服务
-    type: select
-    proxies:
-      - 🎯 全球直连
-      - 🚀 节点选择
-      - 🇯🇵 日本-最优
-      - 🇭🇰 港澳台-最优
-      - 🇺🇸 美国-最优
-  - name: 🎵 TikTok
-    type: select
-    proxies:
-      - 🇺🇸 美国-最优
-      - 🇯🇵 日本-最优
-      - 🚀 节点选择
-{{ttNodeList}}
-  - name: 🎮 Steam下载
-    type: select
-    proxies:
-      - 🎯 全球直连
-      - 🚀 节点选择
-      - 🇯🇵 日本-最优
-      - 🇭🇰 港澳台-最优
-      - 🇺🇸 美国-最优
-  - name: 🎯 全球直连
-    type: select
-    proxies:
-      - DIRECT
-      - 🚀 节点选择
-      - ♻️ 自动选择
-  - name: 🛑 全球拦截
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
-  - name: 🍃 应用净化
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
-  - name: 🐟 漏网之鱼
-    type: select
-    proxies:
-      - 🚀 节点选择
-      - ♻️ 自动选择
-      - 🎯 全球直连
+{{proxyGroups}}
 rule-providers:
   BanAD:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AdvertisingLite/AdvertisingLite.yaml
     interval: 86400
   BanProgramAD:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Privacy/Privacy.yaml
     interval: 86400
   private:
     type: http
@@ -188,23 +69,17 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
     interval: 86400
     format: yaml
-  GoogleCN:
-    type: http
-    behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list
-    interval: 86400
   SteamCN:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/SteamCN.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/SteamCN/SteamCN.yaml
     interval: 86400
   Microsoft:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.yaml
     interval: 86400
   icloud:
     type: http
@@ -221,8 +96,8 @@ rule-providers:
   ProxyMedia:
     type: http
     behavior: classical
-    format: text
-    url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyMedia.list
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia.yaml
     interval: 86400
   telegramcidr:
     type: http
@@ -301,11 +176,11 @@ rules:
   - DOMAIN-SUFFIX,open.cd,🎯 全球直连
   - DOMAIN,clash.razord.top,🎯 全球直连
   - DOMAIN,yacd.haishan.me,🎯 全球直连
-  - DOMAIN,rfc.uhdnow.com,JP-RFCHost
+  - DOMAIN,rfc.uhdnow.com,JP-KFCHost
   - RULE-SET,TikTok,🎵 TikTok
   - RULE-SET,BanAD,🛑 全球拦截
   - RULE-SET,BanProgramAD,🍃 应用净化
-  - RULE-SET,GoogleCN,🎯 全球直连
+  - GEOSITE,google-cn,🎯 全球直连
   - RULE-SET,SteamCN,🎮 Steam下载
   - RULE-SET,Microsoft,Ⓜ️ 微软服务
   - RULE-SET,icloud,🍎 苹果服务
@@ -321,3 +196,5 @@ rules:
   - GEOSITE,CN,DIRECT
   - GEOIP,CN,DIRECT
   - MATCH,🐟 漏网之鱼
+proxies:
+{{proxies}}
